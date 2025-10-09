@@ -1,18 +1,9 @@
 <template>
   <!-- Полноэкранная презентация -->
   <div class="min-h-screen bg-black flex items-center justify-center">
-    <iframe 
-      src="https://slides.com/meyou/for-ministry-of-ai-joindubai/embed?byline=hidden&share=hidden"
-      width="100%"
-      height="100%"
-      title="The Leads Arena"
-      scrolling="no"
-      frameborder="0"
-      webkitallowfullscreen
-      mozallowfullscreen
-      allowfullscreen
-      class="absolute inset-0 w-full h-full"
-    />
+    <iframe src="https://slides.com/meyou/for-ministry-of-ai-joindubai/embed?byline=hidden&share=hidden" width="100%"
+      height="100%" title="The Leads Arena" scrolling="no" frameborder="0" webkitallowfullscreen mozallowfullscreen
+      allowfullscreen class="absolute inset-0 w-full h-full" />
   </div>
 </template>
 
@@ -40,4 +31,3 @@ onUnmounted(() => {
   document.body.style.overflow = 'auto'
 })
 </script>
-
