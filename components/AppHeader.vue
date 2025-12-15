@@ -4,7 +4,7 @@
       <div class="flex items-center justify-between h-16">
         <!-- Logo -->
         <NuxtLink to="/" class="flex items-center space-x-2">
-          <span class="text-2xl font-bold font-heading text-primary-600">
+          <span class="text-2xl font-bold font-heading text-black">
             The Arena
           </span>
         </NuxtLink>
@@ -15,7 +15,7 @@
             v-for="item in navigationItems"
             :key="item.path"
             :to="item.path"
-            class="text-gray-700 hover:text-primary-600 transition-colors duration-200 font-medium"
+            class="text-gray-700 hover:text-black transition-colors duration-200 font-medium"
           >
             {{ item.name }}
           </NuxtLink>
@@ -76,6 +76,7 @@ const isMobileMenuOpen = ref(false)
 
 const navigationItems: NavigationItem[] = [
   { name: 'Главная', path: '/' },
+  { name: 'Презентация', path: '/slides' },
   { name: 'О нас', path: '/about' },
   { name: 'Контакты', path: '/contact' }
 ]

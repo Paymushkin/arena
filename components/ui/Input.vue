@@ -78,7 +78,7 @@ const slots = useSlots()
 
 const inputClasses = computed(() => {
   const base = 'w-full px-4 py-3 border rounded-lg outline-none transition'
-  const focus = 'focus:ring-2 focus:ring-primary-500 focus:border-transparent'
+  const focus = 'focus:ring-2 focus:ring-black focus:border-transparent'
   const errorClass = props.error ? 'border-red-500' : 'border-gray-300'
   const disabledClass = props.disabled ? 'bg-gray-100 cursor-not-allowed' : ''
   const iconPadding = slots.icon ? 'pl-10' : ''

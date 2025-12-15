@@ -1,5 +1,10 @@
 <template>
   <div class="container-custom py-16">
+    <AppSeo
+      title="О нас - The Leads Arena"
+      description="Узнайте больше о The Leads Arena - современной платформе для генерации и управления лидами. Наша миссия, технологии и подход."
+      keywords="о нас, команда, миссия, технологии, лиды, генерация лидов"
+    />
     <div class="max-w-4xl mx-auto">
       <h1 class="text-4xl font-bold font-heading text-gray-900 mb-6">
         О нас
@@ -68,13 +73,6 @@
 <script setup lang="ts">
 definePageMeta({
   layout: 'default'
-})
-
-useSeoMeta({
-  title: 'О нас - The Arena',
-  description: 'Узнайте больше о The Arena - современной веб-платформе',
-  ogTitle: 'О нас - The Arena',
-  ogDescription: 'Узнайте больше о The Arena - современной веб-платформе'
 })
 </script>
 

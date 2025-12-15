@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen flex flex-col bg-gray-50">
     <!-- Header -->
-    <AppHeader />
+    <TheHeader />
 
     <!-- Main Content -->
     <main class="flex-grow">
@@ -9,11 +9,12 @@
     </main>
 
     <!-- Footer -->
-    <AppFooter />
+    <TheFooter />
   </div>
 </template>
 
 <script setup lang="ts">
-// Можно добавить логику лейаута здесь
+import TheHeader from '~/components/TheHeader.vue';
+import TheFooter from '~/components/TheFooter.vue';
 </script>
 

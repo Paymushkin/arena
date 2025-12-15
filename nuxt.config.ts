@@ -1,26 +1,31 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-
-  // Режим генерации статических страниц для GitHub Pages
+  modules: ['@nuxtjs/tailwindcss', '@pinia/nuxt', '@nuxtjs/sitemap'],
+  css: ['~/assets/css/main.css'],
+  compatibilityDate: '2025-01-20',
+  
+  // SSR включен для SEO
   ssr: true,
 
   app: {
-    // Базовый URL для GitHub Pages
     baseURL: '/',
-    buildAssetsDir: '/_nuxt/',
-
     head: {
       charset: 'utf-8',
       viewport: 'width=device-width, initial-scale=1',
-      title: 'The Arena',
-      meta: [{ name: 'description', content: 'The Arena - Platform' }],
-      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
+      title: 'The Leads Arena',
+      meta: [
+        { name: 'description', content: 'The Leads Arena - современная платформа для генерации и управления лидами' },
+        { name: 'color-scheme', content: 'light' }
+      ],
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
+        { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
+        { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png' }
+      ]
     }
   },
-
-  // Модули
-  modules: ['@nuxtjs/tailwindcss', '@pinia/nuxt'],
 
   // Настройки Tailwind CSS
   tailwindcss: {
@@ -36,25 +41,50 @@ export default defineNuxtConfig({
     typeCheck: true
   },
 
-  // Настройки CSS
-  css: ['~/assets/css/main.css'],
-
-  // Автоимпорт компонентов
-  components: [
-    {
-      path: '~/components',
-      pathPrefix: false,
-      extensions: ['.vue']
-    }
-  ],
-
-  // Настройки сборки
+  // Настройки для Vercel
   nitro: {
-    preset: 'static',
-    output: {
-      publicDir: '.output/public'
+    preset: process.env.VERCEL ? 'vercel' : 'node-server',
+    routeRules: {
+      // Все страницы уже используют SSR по умолчанию (ssr: true установлен глобально)
+      // Указываем только специальные правила для статических файлов
+      '/sitemap.xml': { static: true },
+      '/__sitemap__/**': { static: true }
     }
   },
 
-  compatibilityDate: '2024-10-09'
+  // Настройки sitemap
+  sitemap: {
+    hostname: 'https://thearena.show', // TODO: заменить на ваш домен
+    defaults: {
+      changefreq: 'weekly',
+      priority: 0.8,
+      lastmod: new Date()
+    },
+    routes: [
+      {
+        url: '/',
+        changefreq: 'daily',
+        priority: 1.0
+      },
+      {
+        url: '/slides',
+        changefreq: 'monthly',
+        priority: 0.7
+      },
+      {
+        url: '/about',
+        changefreq: 'monthly',
+        priority: 0.8
+      },
+      {
+        url: '/contact',
+        changefreq: 'monthly',
+        priority: 0.8
+      }
+    ]
+  } as any,
+
+  site: {
+    url: 'https://thearena.show' // TODO: заменить на ваш домен
+  }
 })

@@ -1,5 +1,10 @@
 <template>
   <div class="container-custom py-16">
+    <AppSeo
+      title="Контакты - The Leads Arena"
+      description="Свяжитесь с нами любым удобным способом. The Leads Arena - всегда готовы помочь вам с генерацией и управлением лидами."
+      keywords="контакты, связаться, поддержка, email, связь, лиды"
+    />
     <div class="max-w-2xl mx-auto">
       <h1 class="text-4xl font-bold font-heading text-gray-900 mb-6">
         Контакты
@@ -14,7 +19,7 @@
           <div class="card-body">
             <div class="text-3xl mb-4">📧</div>
             <h3 class="font-semibold text-lg mb-2">Email</h3>
-            <a href="mailto:info@thearena.show" class="text-primary-600 hover:underline">
+            <a href="mailto:info@thearena.show" class="text-black hover:underline">
               info@thearena.show
             </a>
           </div>
@@ -24,7 +29,7 @@
           <div class="card-body">
             <div class="text-3xl mb-4">🌐</div>
             <h3 class="font-semibold text-lg mb-2">Website</h3>
-            <a href="https://thearena.show" class="text-primary-600 hover:underline">
+            <a href="https://thearena.show" class="text-black hover:underline">
               thearena.show
             </a>
           </div>
@@ -45,7 +50,7 @@
                 v-model="form.name"
                 type="text"
                 required
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none transition"
                 placeholder="Ваше имя"
               >
             </div>
@@ -59,7 +64,7 @@
                 v-model="form.email"
                 type="email"
                 required
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none transition"
                 placeholder="your@email.com"
               >
             </div>
@@ -73,14 +78,14 @@
                 v-model="form.message"
                 required
                 rows="5"
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition resize-none"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none transition resize-none"
                 placeholder="Ваше сообщение..."
               />
             </div>
 
-            <button type="submit" class="btn-primary w-full">
+            <BaseButton type="submit" variant="primary" class="w-full">
               Отправить сообщение
-            </button>
+            </BaseButton>
           </form>
         </div>
       </div>
@@ -89,15 +94,10 @@
 </template>
 
 <script setup lang="ts">
+import BaseButton from '~/components/ui/BaseButton.vue'
+
 definePageMeta({
   layout: 'default'
-})
-
-useSeoMeta({
-  title: 'Контакты - The Arena',
-  description: 'Свяжитесь с нами по любым вопросам',
-  ogTitle: 'Контакты - The Arena',
-  ogDescription: 'Свяжитесь с нами по любым вопросам'
 })
 
 const form = reactive({
