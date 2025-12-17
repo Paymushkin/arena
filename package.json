@@ -12,7 +12,8 @@
     "postinstall": "nuxt prepare",
     "deploy": "npm run generate && node scripts/deploy.js",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "preview:fresh": "lsof -ti:3000 | xargs kill -9 2>/dev/null || true && rm -rf .output .nuxt && npm run build && npm run preview"
   },
   "dependencies": {
     "@pinia/nuxt": "^0.5.1",

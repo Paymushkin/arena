@@ -80,7 +80,9 @@ const updateEvents = () => {
 }
 
 onMounted(() => {
-  if (!process.client) return
+  if (!process.client) {
+    return
+  }
   
   updateEvents()
   

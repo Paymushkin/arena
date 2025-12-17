@@ -7,24 +7,23 @@
   </button>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed, useAttrs } from 'vue'
 
-const props = defineProps({
-  variant: {
-    type: String,
-    default: 'secondary',
-    validator: (value) => ['primary', 'secondary'].includes(value),
-  },
-  size: {
-    type: String,
-    default: 'md',
-    validator: (value) => ['sm', 'md'].includes(value),
-  },
-  type: {
-    type: String,
-    default: 'button',
-  },
+type ButtonVariant = 'primary' | 'secondary'
+type ButtonSize = 'sm' | 'md'
+type ButtonType = 'button' | 'submit' | 'reset'
+
+interface Props {
+  variant?: ButtonVariant
+  size?: ButtonSize
+  type?: ButtonType
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  variant: 'secondary',
+  size: 'md',
+  type: 'button'
 })
 
 const attrs = useAttrs()

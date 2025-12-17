@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full max-w-full overflow-x-hidden">
+  <div class="w-full max-w-full">
     <AppSeo
       title="The Leads Arena - Платформа для генерации и управления лидами"
       description="The Leads Arena - современная платформа для эффективной генерации, управления и анализа лидов. Инструменты для роста вашего бизнеса."
@@ -12,7 +12,12 @@
 
     <!-- Statistics Section -->
     <ClientOnly>
-      <StatisticsSection id="statistics" key="statistics-section" />
+      <StatisticsSection id="statistics" key="statistics-section" class="mb-[56px] md:mb-[76px]" />
+    </ClientOnly>
+
+    <!-- Arena Section -->
+    <ClientOnly>
+      <ArenaSection id="arena" key="arena-section" />
     </ClientOnly>
 
     <!-- FAQ Section -->
@@ -21,9 +26,9 @@
 </template>
 
 <script setup lang="ts">
-import BaseButton from '~/components/ui/BaseButton.vue'
 import StatisticsSection from '~/components/StatisticsSection.vue'
 import FaqSectionDynamic from '~/components/FaqSectionDynamic.vue'
+import ArenaSection from '~/components/ArenaSection.vue'
 
 definePageMeta({
   layout: 'default'

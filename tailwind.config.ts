@@ -12,7 +12,7 @@ export default <Partial<Config>>{
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Inter', 'system-ui', 'sans-serif']
       },
       borderRadius: {
         none: '0',
@@ -23,7 +23,7 @@ export default <Partial<Config>>{
         xl: '0.75rem', // 12px
         '2xl': '1rem', // 16px
         '3xl': '2rem', // 32px
-        full: '9999px',
+        full: '9999px'
       },
       fontSize: {
         xs: ['0.75rem', { lineHeight: '1.2' }], // 12px
@@ -35,19 +35,19 @@ export default <Partial<Config>>{
         '3xl': ['2.125rem', { lineHeight: '1.2' }], // 34px
         '4xl': ['3rem', { lineHeight: '1.2' }], // 48px
         '5xl': ['4.625rem', { lineHeight: '1.1' }], // 74px
-        '6xl': ['7.5rem', { lineHeight: '1.1' }], // 120px
+        '6xl': ['7.5rem', { lineHeight: '1.1' }] // 120px
       },
       colors: {
         black: '#000000',
         white: '#FFFFFF',
         'black-20': 'rgba(0, 0, 0, 0.2)',
-        'black-70': 'rgba(0, 0, 0, 0.7)',
-      },
+        'black-70': 'rgba(0, 0, 0, 0.7)'
+      }
     },
     container: {
       center: true,
       padding: {
-        DEFAULT: '1rem',
+        DEFAULT: '1rem'
       },
       screens: {
         xs: '375px',

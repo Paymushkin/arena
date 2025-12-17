@@ -59,8 +59,7 @@ const currentYear = new Date().getFullYear()
 
 const footerLinks: NavigationItem[] = [
   { name: 'Главная', path: '/' },
-  { name: 'О нас', path: '/about' },
-  { name: 'Контакты', path: '/contact' }
+  { name: 'Презентация', path: '/slides' }
 ]
 
 const socialLinks: SocialLink[] = [
@@ -81,4 +80,3 @@ const socialLinks: SocialLink[] = [
   }
 ]
 </script>
-

@@ -76,9 +76,7 @@ const isMobileMenuOpen = ref(false)
 
 const navigationItems: NavigationItem[] = [
   { name: 'Главная', path: '/' },
-  { name: 'Презентация', path: '/slides' },
-  { name: 'О нас', path: '/about' },
-  { name: 'Контакты', path: '/contact' }
+  { name: 'Презентация', path: '/slides' }
 ]
 
 const toggleMobileMenu = () => {
@@ -89,4 +87,3 @@ const closeMobileMenu = () => {
   isMobileMenuOpen.value = false
 }
 </script>
-

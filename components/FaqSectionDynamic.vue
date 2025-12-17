@@ -4,6 +4,7 @@
     { 'py-20 md:py-[100px]': !standalone },
     { 'py-[60px] md:py-[120px]': standalone }
   ]">
+  
   <h2 class="text-xl md:text-3xl xl:text-4xl mb-8 md:mb-12">
       <template v-if="standalone">
         <a href="#faq" class="hover:opacity-80 transition-opacity">Frequently Asked Questions</a>
@@ -74,6 +75,7 @@
 </template>
 
 <script setup>
+// @ts-nocheck
 import { ref, onMounted, nextTick, computed, onUnmounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { FAQ_DATA } from '~/constants/faqData';
@@ -107,94 +109,28 @@ const sectionRef = ref(null);
 // Статические FAQ данные для SSR (загружаем из файла)
 const staticFaqItems = FAQ_DATA;
 
-// Функция для загрузки FAQ данных (используем тот же подход, что и у компаний)
+// Функция для загрузки FAQ данных через единый API‑эндпоинт /api/faq
 const fetchFAQ = async () => {
   try {
     loading.value = true;
     error.value = '';
     
-      // Определяем, работаем ли мы локально или на продакшене
-      const isLocal = window.location.hostname.includes('localhost') || 
-                     window.location.hostname.includes('127.0.0.1') ||
-                     window.location.hostname.includes('0.0.0.0');
-      
-      if (isLocal) {
-        // Локально используем API
-        try {
-          const response = await $fetch('/api/faq', {
-            query: { _t: Date.now() } // Добавляем timestamp для предотвращения кеширования
-          });
-          if (response.success) {
-            faqItems.value = response.faq || [];
-          } else {
-            error.value = response.error || 'Ошибка загрузки данных';
-          }
-        } catch (apiError) {
-          console.error('API error:', apiError);
-          // Если API не работает, используем fallback данные
-          faqItems.value = staticFaqItems;
-        }
-      } else {
-        // На продакшене (GitHub Pages) используем прямые запросы к Google Sheets
-        try {
-          const SPREADSHEET_ID = '1z3JLJVzDADNCa6oSq3R701xLB8K5yyuCFlPZpSMXa1s';
-          const CSV_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/export?format=csv&gid=0`;
-          
-          const response = await fetch(CSV_URL);
-          
-          if (!response.ok) {
-            throw new Error(`CSV export error: ${response.statusText}`);
-          }
-          
-          const csvText = await response.text();
-          
-          // Парсим CSV правильно (учитывая запятые в кавычках)
-          const lines = csvText.split('\n');
-          const rows = lines.filter(line => line.trim()).map(line => {
-            const values = [];
-            let current = '';
-            let inQuotes = false;
-            
-            for (let i = 0; i < line.length; i++) {
-              const char = line[i];
-              
-              if (char === '"') {
-                inQuotes = !inQuotes;
-              } else if (char === ',' && !inQuotes) {
-                values.push(current.trim());
-                current = '';
-              } else {
-                current += char;
-              }
-            }
-            
-            values.push(current.trim());
-            return values;
-          });
-          
-          // Преобразуем в FAQ формат
-          const faqItemsFromCSV = rows.map((row, index) => ({
-            id: `faq-${index + 1}`,
-            question: row[0] || '',
-            answer: row[1] || '',
-            order: row[2] || (index + 1)
-          })).filter(item => item.question && item.answer);
-          
-          faqItems.value = faqItemsFromCSV;
-          console.log('FAQ items loaded from Google Sheets:', faqItemsFromCSV.length);
-          
-        } catch (csvError) {
-          console.error('CSV fetch error:', csvError);
-          // Если CSV не работает, используем fallback данные
-          faqItems.value = staticFaqItems;
-        }
-      }
+    const response = await $fetch('/api/faq', {
+      query: { _t: Date.now() }
+    })
+
+    if (response && response.success) {
+      faqItems.value = response.faq || staticFaqItems
+    } else {
+      error.value = (response && response.error) || 'Ошибка загрузки данных'
+      faqItems.value = staticFaqItems
+    }
   } catch (err) {
-    console.error('Error fetching FAQ:', err);
-    error.value = 'Ошибка загрузки данных';
-    faqItems.value = staticFaqItems;
+    console.error('Error fetching FAQ:', err)
+    error.value = 'Ошибка загрузки данных'
+    faqItems.value = staticFaqItems
   } finally {
-    loading.value = false;
+    loading.value = false
   }
 };
 

@@ -2,14 +2,13 @@
   <header class="w-full">
     <!-- Events bar -->
     <EventsBar />
-    
     <!-- Navigation -->
     <nav class="bg-white">
       <div class="container mx-auto md:px-4 px-2">
         <div class="flex items-center justify-between py-4 gap-1.5">
           <!-- Left side: Logo and Hashtag -->
           <div class="flex items-center gap-2 md:gap-3 lg:gap-4 xl:gap-6 2xl:gap-12">
-            <button 
+            <button
               class="lg:hidden text-black"
               @click="isMenuOpen = !isMenuOpen"
             >
@@ -21,14 +20,15 @@
                 <!-- Основное лого везде -->
                 <LogoBlack class="h-4 md:h-5 lg:h-6 xl:h-7 2xl:h-8 w-[132px] md:w-[165px] max-w-full lg:w-[198px] xl:w-[231px] 2xl:w-[254px]" />
               </NuxtLink>
-            
-              <NuxtLink 
-                href="#" 
-                class="text-black text-[8px] md:text-[10px] xl:text-xs 2xl:text-sm md:uppercase lowercase"
-                @click.prevent="handleHashtagClick"
-              >{{ hashtag[0] }}
-              </NuxtLink>
-            </div>  
+
+              <button
+                type="button"
+                class="text-black text-[8px] md:text-[10px] xl:text-xs 2xl:text-sm md:uppercase lowercase text-left"
+                @click="handleHashtagClick"
+              >
+                {{ hashtag[0] }}
+              </button>
+            </div>
           </div>
 
           <!-- Desktop Navigation Links -->
@@ -56,15 +56,15 @@
             </NuxtLink> -->
 
             <div class="relative hidden md:block">
-                <!-- Participate mobile (small) -->
-                <BaseButton variant="secondary" size="sm" @click="toggleParticipateMenu" class="flex w-full justify-between md:hidden">
-                  <span>Participate</span>
-                </BaseButton>
-                <!-- Participate desktop/tablet (default large) -->
-                <BaseButton variant="secondary" @click="toggleParticipateMenu" class="hidden md:flex w-full justify-between">
-                  <span>Participate</span>
-                  <span class="inline">></span>
-                </BaseButton>
+              <!-- Participate mobile (small) -->
+              <BaseButton variant="secondary" size="sm" @click="toggleParticipateMenu" class="flex w-full justify-between md:hidden">
+                <span>Participate</span>
+              </BaseButton>
+              <!-- Participate desktop/tablet (default large) -->
+              <BaseButton variant="secondary" @click="toggleParticipateMenu" class="hidden md:flex w-full justify-between">
+                <span>Participate</span>
+                <span class="inline">></span>
+              </BaseButton>
 
               <div v-if="isParticipateOpen" class="absolute top-full mt-2 right-0 bg-white shadow-lg rounded-lg py-2 min-w-[150px] z-50 text-black">
                 <NuxtLink :to="designerRegistration" target="_blank" class="block px-4 py-2 hover:bg-gray-100 transition-colors text-black">
@@ -99,9 +99,6 @@
                   Other
                 </NuxtLink>
 
-                <NuxtLink to="/contact" target="_blank" class="block px-4 py-2 hover:bg-gray-100 transition-colors text-black">
-                  Partners
-                </NuxtLink>
               </div>
             </div>
             <a href="https://magazine.emiratesfashionweek.com" class="md:hidden flex justify-center items-center text-black hover:text-gray-600 transition-colors cursor-pointer 2xl:text-base lg:text-sm text-xs">MAGAZINE</a>
@@ -205,9 +202,6 @@
                   Other
                 </NuxtLink>
 
-                <NuxtLink to="/contact" target="_blank" class="block px-4 py-1 hover:bg-gray-100 transition-colors text-black">
-                  Partners
-                </NuxtLink>
               </div>
             </div>
 
@@ -235,10 +229,8 @@ const isMenuOpen = ref(false);
 const isLinksMenuOpen = ref(false);
 const isParticipateOpen = ref(false);
 const navLinks = [
-  { name: 'HOME', href: '/', id: 'home' },
-  { name: 'PRESENTATION', href: '/slides', id: 'slides' },
-  { name: 'ABOUT', href: '/about', id: 'about' },
-  { name: 'CONTACT', href: '/contact', id: 'contact' },
+  // { name: 'HOME', href: '/', id: 'home' },
+  { name: 'PRESENTATION', href: '/slides', id: 'slides' }
 ];
 
 const scrollToSection = (href) => {

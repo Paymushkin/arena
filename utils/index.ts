@@ -25,7 +25,7 @@ export const formatNumber = (num: number, locale = 'ru-RU'): string => {
  * Обрезает строку до указанной длины и добавляет многоточие
  */
 export const truncate = (str: string, length: number): string => {
-  if (str.length <= length) return str
+  if (str.length <= length) { return str }
   return str.slice(0, length) + '...'
 }
 
@@ -45,7 +45,7 @@ export const debounce = <T extends (...args: any[]) => any>(
 ): ((...args: Parameters<T>) => void) => {
   let timeout: NodeJS.Timeout | null = null
 
-  return function executedFunction(...args: Parameters<T>) {
+  return function executedFunction (...args: Parameters<T>) {
     const later = () => {
       timeout = null
       func(...args)
@@ -67,7 +67,7 @@ export const throttle = <T extends (...args: any[]) => any>(
 ): ((...args: Parameters<T>) => void) => {
   let inThrottle: boolean
 
-  return function executedFunction(...args: Parameters<T>) {
+  return function executedFunction (...args: Parameters<T>) {
     if (!inThrottle) {
       func(...args)
       inThrottle = true
@@ -80,10 +80,10 @@ export const throttle = <T extends (...args: any[]) => any>(
  * Проверяет, является ли значение пустым
  */
 export const isEmpty = (value: any): boolean => {
-  if (value == null) return true
-  if (typeof value === 'string') return value.trim().length === 0
-  if (Array.isArray(value)) return value.length === 0
-  if (typeof value === 'object') return Object.keys(value).length === 0
+  if (value == null) { return true }
+  if (typeof value === 'string') { return value.trim().length === 0 }
+  if (Array.isArray(value)) { return value.length === 0 }
+  if (typeof value === 'object') { return Object.keys(value).length === 0 }
   return false
 }
 
@@ -98,7 +98,7 @@ export const deepClone = <T>(obj: T): T => {
  * Форматирует размер файла в читаемый формат
  */
 export const formatFileSize = (bytes: number): string => {
-  if (bytes === 0) return '0 Bytes'
+  if (bytes === 0) { return '0 Bytes' }
 
   const k = 1024
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']

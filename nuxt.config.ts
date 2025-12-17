@@ -4,7 +4,7 @@ export default defineNuxtConfig({
   modules: ['@nuxtjs/tailwindcss', '@pinia/nuxt', '@nuxtjs/sitemap'],
   css: ['~/assets/css/main.css'],
   compatibilityDate: '2025-01-20',
-  
+
   // SSR включен для SEO
   ssr: true,
 
@@ -71,16 +71,7 @@ export default defineNuxtConfig({
         changefreq: 'monthly',
         priority: 0.7
       },
-      {
-        url: '/about',
-        changefreq: 'monthly',
-        priority: 0.8
-      },
-      {
-        url: '/contact',
-        changefreq: 'monthly',
-        priority: 0.8
-      }
+      // Страницы /about и /contact удалены
     ]
   } as any,
 

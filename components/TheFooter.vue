@@ -60,9 +60,10 @@
           <h3 class="hidden md:block text-lg font-medium mb-6">Contacts</h3>
 
           <div class="flex flex-col space-y-3">
-
             <address class="not-italic uppercase">
-              <p class="text-sm hover:text-gray-300 transition-colors font-normal">{{ address }}</p>
+              <p class="text-sm hover:text-gray-300 transition-colors font-normal">
+                {{ address }}
+              </p>
             </address>
 
             <NuxtLink
@@ -78,22 +79,23 @@
               {{ email }}
             </NuxtLink>
             <div class="flex items-center gap-2">
-            <NuxtLink
-              :to="instagram"
-              target="_blank"
-              class="flex items-center gap-2 text-sm hover:opacity-80 transition-opacity">
-              <InstagramWhiteIcon />
-            </NuxtLink>
+              <NuxtLink
+                :to="instagram"
+                target="_blank"
+                class="flex items-center gap-2 text-sm hover:opacity-80 transition-opacity"
+              >
+                <InstagramWhiteIcon />
+              </NuxtLink>
 
-            <NuxtLink
-              :to="youtube"
-              target="_blank"
-              class="flex items-center gap-2 text-sm hover:opacity-80 transition-opacity">
-              <YoutubeWhiteIcon />
-            </NuxtLink>
-
-          </div>
-            <span 
+              <NuxtLink
+                :to="youtube"
+                target="_blank"
+                class="flex items-center gap-2 text-sm hover:opacity-80 transition-opacity"
+              >
+                <YoutubeWhiteIcon />
+              </NuxtLink>
+            </div>
+            <span
               class="text-sm hover:text-gray-300 transition-colors cursor-pointer"
               @click="showContactForm = true"
             >
@@ -115,7 +117,7 @@
       </div>
     </div>
 
-    <ContactForm 
+    <ContactForm
       :is-open="showContactForm"
       @close="showContactForm = false"
     />
@@ -123,22 +125,20 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import LogoWhiteIcon from './icons/LogoWhiteIcon.vue';
 import InstagramWhiteIcon from './icons/InstagramWhiteIcon.vue';
 import YoutubeWhiteIcon from './icons/YoutubeWhiteIcon.vue';
-import { email, instagram, hashtag, phone, address, youtube } from '~/constants/texts';
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
 import ContactForm from './ContactForm.vue';
+import { email, instagram, hashtag, phone, address, youtube } from '~/constants/texts';
 
 const router = useRouter();
 
 const menuLinks = [
   { name: 'HOME', href: '/', id: 'home' },
   { name: 'PRESENTATION', href: '/slides', id: 'slides' },
-  { name: 'ABOUT', href: '/about', id: 'about' },
-  { name: 'CONTACT', href: '/contact', id: 'contact' },
-  { name: 'FAQ', href: '/#faq', id: 'faq' },
+  { name: 'FAQ', href: '/#faq', id: 'faq' }
 ];
 
 const scrollToSection = (href) => {
@@ -153,10 +153,10 @@ const scrollToSection = (href) => {
     router.push(href);
     return;
   }
-  
+
   const element = document.querySelector(href);
   if (element) {
-    element.scrollIntoView({ 
+    element.scrollIntoView({
       behavior: 'smooth',
       block: 'start'
     });

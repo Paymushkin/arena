@@ -13,5 +13,3 @@ export const designerRegistration = 'https://docs.google.com/forms'
 export const visitorsRegistration = 'https://docs.google.com/forms'
 export const modelRegistration = 'https://docs.google.com/forms'
 export const phototVideoRegistration = 'https://docs.google.com/forms'
-
-

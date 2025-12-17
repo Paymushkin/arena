@@ -13,7 +13,7 @@ export const useApi = <T>(url: string, options?: UseFetchOptions<T>) => {
     timeout: TIMEOUTS.API_REQUEST,
 
     // Обработка ошибок
-    onResponseError({ response }) {
+    onResponseError ({ response }) {
       console.error('API Error:', response._data)
     },
 

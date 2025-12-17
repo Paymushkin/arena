@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <title>Mobile Sidebar Switcher</title>
+
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+
+  <style>
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+
+
+    :root {
+
+      /* ~10–15% of viewport width on mobile, slightly wider as screens grow */
+
+      --sbw: clamp(64px, 13vw, 190px);
+
+    }
+
+
+
+    body {
+
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+      background: #0f172a;
+
+      color: #f9fafb;
+
+      min-height: 100vh;
+
+      display: flex;
+
+      justify-content: center;
+
+      align-items: stretch;
+
+    }
+
+
+
+    /* Scroll container (single page) */
+
+    .app {
+
+      width: 100%;
+
+      max-width: 860px;
+
+      height: 100vh;
+
+      background: radial-gradient(circle at top, #1f2937 0, #020617 60%);
+
+      position: relative;
+
+      padding: 16px;
+
+      padding-left: calc(var(--sbw) + 12px);
+
+      overflow-y: auto;
+
+      -webkit-overflow-scrolling: touch;
+
+    }
+
+
+
+    .page-header { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
+
+    .page-subtitle { font-size: 13px; color: #9ca3af; margin-bottom: 14px; }
+
+
+
+    .card {
+
+      background: rgba(15, 23, 42, 0.9);
+
+      border-radius: 16px;
+
+      padding: 14px 16px;
+
+      margin-bottom: 10px;
+
+      border: 1px solid rgba(148, 163, 184, 0.2);
+
+    }
+
+
+
+    .card-title { font-size: 14px; font-weight: 800; margin-bottom: 6px; }
+
+    .card-text { font-size: 13px; color: #d1d5db; line-height: 1.45; }
+
+
+
+    /* Sidebar */
+
+    .sidebar {
+
+      position: fixed;
+
+      top: 0;
+
+      left: 0;
+
+      width: var(--sbw);
+
+      height: 100vh;
+
+      padding: 14px 8px;
+
+      z-index: 50;
+
+      background: rgba(2, 6, 23, 0.65);
+
+      border-right: 1px solid rgba(148, 163, 184, 0.18);
+
+      backdrop-filter: blur(8px);
+
+
+
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 10px;
+
+      justify-content: flex-start;
+
+
+
+      /* hidden by default; shown by scroll in ARENA mode; always shown in FORUM mode */
+
+      opacity: 0;
+
+      transform: translateX(-6px);
+
+      pointer-events: none;
+
+      transition: opacity 160ms ease-out, transform 160ms ease-out;
+
+    }
+
+
+
+    .sidebar.visible {
+
+      opacity: 1;
+
+      transform: translateX(0);
+
+      pointer-events: auto;
+
+    }
+
+
+
+    .sidebar-title {
+
+      font-size: 10px;
+
+      letter-spacing: 0.12em;
+
+      color: #cbd5e1;
+
+      text-transform: uppercase;
+
+      opacity: 0.9;
+
+      padding: 0 6px;
+
+    }
+
+
+
+    .sidebar-group {
+
+      display: grid;
+
+      grid-template-columns: 1fr;
+
+      gap: 10px;
+
+    }
+
+
+
+    .tile {
+
+      display: grid;
+
+      justify-items: center;
+
+      gap: 6px;
+
+      padding: 10px 6px;
+
+      border-radius: 14px;
+
+      border: 1px solid rgba(148, 163, 184, 0.14);
+
+      background: rgba(15, 23, 42, 0.45);
+
+      cursor: pointer;
+
+      user-select: none;
+
+      -webkit-tap-highlight-color: transparent;
+
+    }
+
+
+
+    .tile:active { transform: scale(0.985); }
+
+
+
+    .tile img {
+
+      width: clamp(48px, 7.5vw, 72px);
+
+      height: clamp(48px, 7.5vw, 72px);
+
+      border-radius: 12px;
+
+      object-fit: cover;
+
+      border: 1px solid rgba(148, 163, 184, 0.22);
+
+    }
+
+
+
+    .tile-label {
+
+      font-size: 10px;
+
+      font-weight: 800;
+
+      color: #e5e7eb;
+
+      text-align: center;
+
+      line-height: 1.1;
+
+      text-transform: uppercase;
+
+      letter-spacing: 0.06em;
+
+    }
+
+
+
+    /* Tiny debug badge */
+
+    .debug {
+
+      position: fixed;
+
+      right: 10px;
+
+      bottom: 10px;
+
+      font-size: 11px;
+
+      color: #e5e7eb;
+
+      background: rgba(15, 23, 42, 0.8);
+
+      border: 1px solid rgba(148, 163, 184, 0.22);
+
+      border-radius: 999px;
+
+      padding: 6px 10px;
+
+      backdrop-filter: blur(6px);
+
+      user-select: none;
+
+    }
+
+
+
+    /* Optional: slightly wider sidebar on very wide screens */
+
+    @media (min-width: 1024px) {
+
+      :root { --sbw: clamp(90px, 12vw, 240px); }
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <div class="app" id="appScroll">
+
+    <div class="page-header">Single Page</div>
+
+    <div class="page-subtitle">Sequence: Intro → Arena Trial Stand → Arena Paid Stand → Forum Agenda → Forum Buy Ticket</div>
+
+
+
+    <div class="card" id="intro">
+
+      <div class="card-title">Intro</div>
+
+      <div class="card-text">
+
+        Scroll down to <strong>Arena Trial Stand</strong>. When Trial reaches the top, the sidebar appears.
+
+        <br /><br />
+
+        In <strong>Arena mode</strong>: you see <strong>John Ivanov</strong> tiles while Trial is active. When Trial fully goes up, you see <strong>STAND A/B/C</strong>.
+
+        <br /><br />
+
+        In <strong>Forum mode</strong>: sidebar is always visible and shows <strong>STAND A/B/C</strong> as the exit back.
+
+      </div>
+
+    </div>
+
+
+
+    <div class="card" id="arena-a1">
+
+      <div class="card-title">Arena Trial Stand</div>
+
+      <div class="card-text">
+
+        This is a long test block to create scroll.
+
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+
+        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+
+        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+        <br /><br />
+
+        Another paragraph… Curabitur non nulla sit amet nisl tempus convallis quis ac lectus. Nulla porttitor accumsan tincidunt.
+
+        Vivamus suscipit tortor eget felis porttitor volutpat. Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui.
+
+        <br /><br />
+
+        More text. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.
+
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.
+
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.
+
+      </div>
+
+    </div>
+
+
+
+    <div class="card" id="arena-a2">
+
+      <div class="card-title">Arena Paid Stand</div>
+
+      <div class="card-text">
+
+        This is a long test block to create scroll.
+
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+
+        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+
+        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+        <br /><br />
+
+        More text. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.
+
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.
+
+      </div>
+
+    </div>
+
+
+
+    <div class="card" id="forum-b1">
+
+      <div class="card-title">Forum Agenda</div>
+
+      <div class="card-text">
+
+        Long test content B1.
+
+        <br /><br />
+
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+
+        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+
+        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+        <br /><br />
+
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.
+
+      </div>
+
+    </div>
+
+
+
+    <div class="card" id="forum-b2">
+
+      <div class="card-title">Forum Buy Ticket</div>
+
+      <div class="card-text">
+
+        Long test content B2.
+
+        <br /><br />
+
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+
+        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+
+        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+        <br /><br />
+
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- Sidebar: tiles are the switcher -->
+
+  <aside class="sidebar" id="sidebar" aria-label="Switcher sidebar">
+
+    <!-- Title is the OPPOSITE of the current mode -->
+
+    <div class="sidebar-title" id="sidebarTitle">FORUM</div>
+
+
+
+    <!-- 1-2-3 (do not change labels) -->
+
+    <div class="sidebar-group" id="peopleSet1" aria-label="Arena people 1-3">
+
+      <div class="tile" data-action="to-forum">
+
+        <img alt="Test" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%23f43f5e'/%3E%3Cstop offset='1' stop-color='%2322c55e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='80' height='80' rx='14' fill='url(%23g)'/%3E%3C/svg%3E" />
+
+        <div class="tile-label">John Ivanov</div>
+
+      </div>
+
+      <div class="tile" data-action="to-forum">
+
+        <img alt="Test" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cdefs%3E%3ClinearGradient id='g2' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%23fde047'/%3E%3Cstop offset='1' stop-color='%2306b6d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='80' height='80' rx='14' fill='url(%23g2)'/%3E%3C/svg%3E" />
+
+        <div class="tile-label">John Ivanov</div>
+
+      </div>
+
+      <div class="tile" data-action="to-forum">
+
+        <img alt="Test" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cdefs%3E%3ClinearGradient id='g3' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%2360a5fa'/%3E%3Cstop offset='1' stop-color='%23fb7185'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='80' height='80' rx='14' fill='url(%23g3)'/%3E%3C/svg%3E" />
+
+        <div class="tile-label">John Ivanov</div>
+
+      </div>
+
+
+
+      <!-- Forum stats (clickable, same action as people) -->
+
+      <div class="tile" data-action="to-forum"><div class="tile-label">50 speakers</div></div>
+
+      <div class="tile" data-action="to-forum"><div class="tile-label">200 delegates expected</div></div>
+
+      <div class="tile" data-action="to-forum"><div class="tile-label">30 nominee</div></div>
+
+      <div class="tile" data-action="to-forum"><div class="tile-label">40 brand spots</div></div>
+
+    </div>
+
+
+
+    <!-- Stands (used in FORUM mode as exit; used in ARENA mode after A1 is gone) -->
+
+    <div class="sidebar-group" id="navStands" aria-label="Navigation stands">
+
+      <!-- Core paid stands first -->
+
+      <div class="tile" data-action="to-a2">
+
+        <img alt="Test" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cdefs%3E%3ClinearGradient id='s1' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%23fde047'/%3E%3Cstop offset='1' stop-color='%2306b6d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='80' height='80' rx='14' fill='url(%23s1)'/%3E%3C/svg%3E" />
+
+        <div class="tile-label">STAND A</div>
+
+      </div>
+
+      <div class="tile" data-action="to-a2">
+
+        <img alt="Test" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cdefs%3E%3ClinearGradient id='s2' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%2360a5fa'/%3E%3Cstop offset='1' stop-color='%23fb7185'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='80' height='80' rx='14' fill='url(%23s2)'/%3E%3C/svg%3E" />
+
+        <div class="tile-label">STAND B</div>
+
+      </div>
+
+      <div class="tile" data-action="to-a2">
+
+        <img alt="Test" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cdefs%3E%3ClinearGradient id='s3' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%23f43f5e'/%3E%3Cstop offset='1' stop-color='%2322c55e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='80' height='80' rx='14' fill='url(%23s3)'/%3E%3C/svg%3E" />
+
+        <div class="tile-label">STAND C</div>
+
+      </div>
+
+
+
+      <!-- Trial CTA below paid stands -->
+
+      <div class="tile" data-action="to-waitlist">
+
+        <div class="tile-label">TRIAL STAND</div>
+
+        <div class="tile-label" style="font-weight:700; opacity:.85;">Join Waitlist</div>
+
+      </div>
+
+
+
+      <!-- Arena stats (clickable) -->
+
+      <div class="tile" data-action="to-a2"><div class="tile-label">1000 visitors</div></div>
+
+      <div class="tile" data-action="to-a2"><div class="tile-label">40 showcase spots</div></div>
+
+      <div class="tile" data-action="to-a2"><div class="tile-label">100 TV interviews</div></div>
+
+      <div class="tile" data-action="to-a2"><div class="tile-label">1000 reportage photos</div></div>
+
+    </div>
+
+  </aside>
+
+
+
+  <div class="debug" id="debug">mode: ARENA</div>
+
+
+
+  <script>
+
+    // Virtual mode: 'arena' or 'forum' (single page, sidebar logic changes)
+
+    let currentMode = 'arena';
+
+
+
+    const appScroll = document.getElementById('appScroll');
+
+    const sidebar = document.getElementById('sidebar');
+
+    const sidebarTitle = document.getElementById('sidebarTitle');
+
+    const debug = document.getElementById('debug');
+
+
+
+    const peopleSet1 = document.getElementById('peopleSet1');
+
+    const navStands = document.getElementById('navStands');
+
+
+
+    const arenaA1 = document.getElementById('arena-a1');
+
+    const arenaA2 = document.getElementById('arena-a2');
+
+
+
+    function setMode(mode) {
+
+      currentMode = mode;
+
+      debug.textContent = 'mode: ' + mode.toUpperCase();
+
+      // Sidebar title is the opposite of current content
+
+      sidebarTitle.textContent = (mode === 'arena') ? 'FORUM' : 'ARENA';
+
+      updateSidebarByScroll();
+
+    }
+
+
+
+    function isA1Started() {
+
+      const containerTop = appScroll.getBoundingClientRect().top;
+
+      const a1Top = arenaA1.getBoundingClientRect().top;
+
+      return a1Top <= containerTop + 8;
+
+    }
+
+
+
+    function isA1GoneUp() {
+
+      const containerTop = appScroll.getBoundingClientRect().top;
+
+      const a1Bottom = arenaA1.getBoundingClientRect().bottom;
+
+      return a1Bottom <= containerTop + 8;
+
+    }
+
+
+
+    function scrollToInContainer(el) {
+
+      const containerRect = appScroll.getBoundingClientRect();
+
+      const elRect = el.getBoundingClientRect();
+
+      const delta = elRect.top - containerRect.top;
+
+      appScroll.scrollTo({ top: appScroll.scrollTop + delta, behavior: 'smooth' });
+
+    }
+
+
+
+    function updateSidebarByScroll() {
+
+      // FORUM mode: sidebar always visible, personas hidden, stands visible
+
+      if (currentMode !== 'arena') {
+
+        sidebar.classList.add('visible');
+
+        peopleSet1.style.display = 'none';
+
+        navStands.style.display = 'grid';
+
+        return;
+
+      }
+
+
+
+      // ARENA mode: sidebar depends on scrolling into A1
+
+      const showSidebar = isA1Started();
+
+      sidebar.classList.toggle('visible', showSidebar);
+
+
+
+      const showStands = isA1GoneUp();
+
+      // - at start of A1: show personas
+
+      // - once A1 is gone: show stands
+
+      peopleSet1.style.display = (showSidebar && !showStands) ? 'grid' : 'none';
+
+      navStands.style.display  = (showSidebar && showStands) ? 'grid' : 'none';
+
+    }
+
+
+
+    // Click handling: tiles are the switcher
+
+    sidebar.addEventListener('click', (e) => {
+
+      const tile = e.target.closest('.tile');
+
+      if (!tile) return;
+
+
+
+      const action = tile.getAttribute('data-action');
+
+
+
+      if (action === 'to-forum') {
+
+        setMode('forum');
+
+        // Optional: jump the user into the forum section for context
+
+        const forumAgenda = document.getElementById('forum-b1');
+
+        requestAnimationFrame(() => scrollToInContainer(forumAgenda));
+
+        return;
+
+      }
+
+
+
+      if (action === 'to-waitlist') {
+
+        // Trial stand CTA: jump to the Trial section (A1)
+
+        setMode('arena');
+
+        const a1 = document.getElementById('arena-a1');
+
+        requestAnimationFrame(() => scrollToInContainer(a1));
+
+        return;
+
+      }
+
+
+
+      if (action === 'to-a2') {
+
+        setMode('arena');
+
+        requestAnimationFrame(() => scrollToInContainer(arenaA2));
+
+        return;
+
+      }
+
+    });
+
+
+
+    // Scroll listener
+
+    appScroll.addEventListener('scroll', updateSidebarByScroll, { passive: true });
+
+
+
+    // --- Minimal tests (run in console) ---
+
+    function assert(name, cond) {
+
+      if (!cond) console.error('TEST FAIL:', name);
+
+      else console.log('TEST OK:', name);
+
+    }
+
+
+
+    window.__tests = { setMode, isA1Started, isA1GoneUp, updateSidebarByScroll, scrollToInContainer };
+
+
+
+    assert('Nodes exist', !!appScroll && !!sidebar && !!peopleSet1 && !!navStands && !!arenaA1 && !!arenaA2);
+
+    assert('Initial mode is arena', currentMode === 'arena');
+
+
+
+    // Initial render
+
+    setMode('arena');
+
+  </script>
+
+</body>
+
+</html>

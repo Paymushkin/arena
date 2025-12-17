@@ -18,25 +18,25 @@ export const useAppStore = defineStore('app', {
   }),
 
   getters: {
-    isLoading: (state) => state.loading,
-    isSidebarOpen: (state) => state.sidebarOpen,
-    currentTheme: (state) => state.theme
+    isLoading: state => state.loading,
+    isSidebarOpen: state => state.sidebarOpen,
+    currentTheme: state => state.theme
   },
 
   actions: {
-    setLoading(value: boolean) {
+    setLoading (value: boolean) {
       this.loading = value
     },
 
-    toggleSidebar() {
+    toggleSidebar () {
       this.sidebarOpen = !this.sidebarOpen
     },
 
-    setSidebarOpen(value: boolean) {
+    setSidebarOpen (value: boolean) {
       this.sidebarOpen = value
     },
 
-    toggleTheme() {
+    toggleTheme () {
       this.theme = this.theme === 'light' ? 'dark' : 'light'
 
       // Сохраняем в localStorage
@@ -45,7 +45,7 @@ export const useAppStore = defineStore('app', {
       }
     },
 
-    setTheme(theme: 'light' | 'dark') {
+    setTheme (theme: 'light' | 'dark') {
       this.theme = theme
 
       if (process.client) {
@@ -53,7 +53,7 @@ export const useAppStore = defineStore('app', {
       }
     },
 
-    initTheme() {
+    initTheme () {
       if (process.client) {
         const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null
         if (savedTheme) {
