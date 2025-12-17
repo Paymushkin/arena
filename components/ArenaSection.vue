@@ -352,7 +352,6 @@ onUnmounted(() => {
 @media (min-width: 640px) {
   .sidebar {
     width: 180px;
-    border-right: 1px solid black;
   }
 }
 
