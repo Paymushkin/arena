@@ -17,7 +17,7 @@
 
     <!-- Arena Section -->
     <ClientOnly>
-      <ArenaSection id="arena" key="arena-section" />
+      <ArenaSection id="arena" key="arena-section" class="mb-[56px] md:mb-[76px]" />
     </ClientOnly>
 
     <!-- FAQ Section -->
