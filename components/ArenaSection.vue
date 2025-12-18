@@ -1,9 +1,9 @@
 <template>
   <section
     id="arena"
-    class="arena-section w-full min-h-screen bg-white relative"
+    class="arena-section w-full min-h-screen bg-[#f9fafb] relative"
   >
-    <div class="flex flex-row w-full relative">
+    <div class="flex flex-row w-full relative container mx-auto">
       <!-- Sidebar -->
       <aside
         ref="sidebarRef"
@@ -101,7 +101,7 @@
       </aside>
 
       <!-- Main Content -->
-      <main class="content flex-1 min-h-screen">
+      <main class="content flex-1 min-h-screen bg-white">
         <!-- Exhibition Section -->
         <section
           ref="exhibitionSectionRef"
@@ -346,7 +346,7 @@ onUnmounted(() => {
   overflow-x: visible;
   position: sticky;
   top: 0;
-  background-color: #f9fafb;
+  /* background-color: #f9fafb; */
 }
 
 @media (min-width: 640px) {
