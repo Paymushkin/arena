@@ -77,5 +77,11 @@ export default defineNuxtConfig({
 
   site: {
     url: 'https://thearena.show' // TODO: заменить на ваш домен
+  },
+
+  runtimeConfig: {
+    public: {
+      arenaScriptUrl: process.env.NUXT_PUBLIC_ARENA_SCRIPT_URL || ''
+    }
   }
 })

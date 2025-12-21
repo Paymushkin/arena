@@ -15,6 +15,11 @@
       <StatisticsSection id="statistics" key="statistics-section" class="mb-[56px] md:mb-[76px]" />
     </ClientOnly>
 
+    <!-- Canva Section -->
+    <ClientOnly>
+      <CanvaSection id="canva" key="canva-section" class="mb-[56px] md:mb-[76px]" />
+    </ClientOnly>
+
     <!-- Arena Section -->
     <ClientOnly>
       <ArenaSection id="arena" key="arena-section" class="mb-[56px] md:mb-[76px]" />
@@ -29,6 +34,7 @@
 import StatisticsSection from '~/components/StatisticsSection.vue'
 import FaqSectionDynamic from '~/components/FaqSectionDynamic.vue'
 import ArenaSection from '~/components/ArenaSection.vue'
+import CanvaSection from '~/components/CanvaSection.vue'
 
 definePageMeta({
   layout: 'default'
