@@ -408,43 +408,48 @@ const handleSubmit = async () => {
     
     let response;
     
-    // Всегда используем Google Apps Script для отправки в таблицу waitlist
-    // URL должен быть настроен после развертывания скрипта из google-apps-script-waitlist.js
-    // Временный URL (нужно заменить на реальный после развертывания скрипта)
-    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxUuh8iEc5YE8k2q5e36DE66OpYPetpEOA0YdpQm0QwRXqqEcBDPcU5xP0RZI71R-bsbA/exec';
-    
-    console.log('Using Google Apps Script endpoint for waitlist');
-    
-    const urlParams = new URLSearchParams();
-    urlParams.append('action', 'submit');
-    urlParams.append('companyName', form.companyName);
-    urlParams.append('industry', industryValue);
-    urlParams.append('name', form.name || '');
-    urlParams.append('email', form.email || '');
-    urlParams.append('phone', form.phone || '');
-    urlParams.append('message', form.message || '');
-    urlParams.append('agreement1', form.agreement1.toString());
-    urlParams.append('agreement2', form.agreement2.toString());
-    urlParams.append('timestamp', new Date().toISOString());
-    urlParams.append('source', 'Waitlist Form');
-    urlParams.append('status', 'WAITLIST'); // Добавляем статус по умолчанию
-    
-    // Используем fetch для отправки данных (работает и локально, и на продакшене)
-    try {
-      response = await fetch(`${GOOGLE_SCRIPT_URL}?${urlParams.toString()}`, {
-        method: 'GET',
-        mode: 'no-cors' // Важно для Google Apps Script
+    if (isLocal) {
+      console.log('Using local API endpoint');
+      // Локально используем API
+      response = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          companyName: form.companyName,
+          industry: industryValue,
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          message: form.message,
+          agreement1: form.agreement1,
+          agreement2: form.agreement2
+        })
       });
+    } else {
+      console.log('Using Google Apps Script endpoint');
+      // На продакшене используем простой подход через img тег (не блокируется CORS)
+      const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxUuh8iEc5YE8k2q5e36DE66OpYPetpEOA0YdpQm0QwRXqqEcBDPcU5xP0RZI71R-bsbA/exec';
       
-      // При mode: 'no-cors' response всегда ok, но мы не можем проверить статус
-      // Считаем запрос успешным, если не было исключения
-      console.log('Data sent to Google Apps Script successfully');
-    } catch (fetchError) {
-      console.error('Error sending to Google Apps Script:', fetchError);
-      // Пробуем альтернативный метод через img тег (не блокируется CORS)
+      const urlParams = new URLSearchParams();
+      urlParams.append('action', 'submit');
+      urlParams.append('companyName', form.companyName);
+      urlParams.append('industry', industryValue);
+      urlParams.append('name', form.name);
+      urlParams.append('email', form.email);
+      urlParams.append('phone', form.phone);
+      urlParams.append('message', form.message);
+      urlParams.append('agreement1', form.agreement1.toString());
+      urlParams.append('agreement2', form.agreement2.toString());
+      urlParams.append('timestamp', new Date().toISOString());
+      urlParams.append('source', 'Waitlist Form');
+      urlParams.append('status', 'WAITLIST'); // Добавляем статус по умолчанию
+      
+      // Создаем невидимый img тег для отправки данных
       const img = new Image();
       const fullUrl = `${GOOGLE_SCRIPT_URL}?${urlParams.toString()}`;
-      console.log('Trying alternative method - sending via img tag:', fullUrl);
+      console.log('Sending to Google Apps Script:', fullUrl);
       img.src = fullUrl;
       
       // Добавляем обработчики для отслеживания успеха/ошибки

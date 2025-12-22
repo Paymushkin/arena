@@ -9,13 +9,13 @@
         ref="sidebarRef"
         class="sidebar z-10"
       >
-        <div class="p-2 md:p-3 lg:p-6">
+        <div class="md:p-3 py-2 lg:p-6">
           <!-- Forum 1 Sidebar Content -->
           <div v-if="activeSidebarType === 'forum1'" class="space-y-4 md:space-y-6">
             <!-- Speakers Block -->
             <div>
-              <h3 class="text-base md:text-lg lg:text-2xl font-bold mb-2 md:mb-3 lg:mb-4 uppercase">FORUM</h3>
-              <div class="flex flex-col space-y-2 md:space-y-3 lg:space-y-4">
+              <h3 class="text-xs md:text-sm lg:text-base font-bold mb-2 md:mb-3 lg:mb-4 uppercase">FORUM</h3>
+              <div class="flex flex-col items-start space-y-2 md:space-y-3 lg:space-y-4">
                 <TransitionGroup name="fade" tag="div" class="flex flex-col gap-2 md:gap-3 lg:gap-4">
                 <div
                     v-for="speaker in displayedSpeakers"
@@ -26,7 +26,7 @@
                   <img
                       :src="speaker.photo || 'https://storage.yandexcloud.net/videos-meyou/arena/images/1.png'"
                     :alt="speaker.name"
-                    class="w-14 h-14 md:w-12 md:h-12 lg:w-16 lg:h-16 flex-shrink-0 aspect-square object-cover rounded-full"
+                    class="w-10 h-10 md:w-12 md:h-12 lg:w-16 lg:h-16 flex-shrink-0 aspect-square object-cover rounded-full"
                   />
                   <div class="flex flex-col items-start">
                       <span class="text-xs md:text-sm font-semibold">{{ speaker.name }}</span>
@@ -45,7 +45,7 @@
                 class="info-block"
               >
                 <p class="text-xs md:text-sm font-bold text-black break-words">
-                  {{ stat.title }} {{ stat.number }}{{ stat.plus ? '+' : '' }}
+                  {{ stat.number }}{{ stat.plus ? '+' : '' }} <br> {{ stat.title }}
                 </p>
                 <p v-if="stat.subtitle" class="text-[10px] md:text-xs text-gray-600 break-words mt-1">
                   {{ stat.subtitle }}
@@ -60,7 +60,7 @@
             <!-- Stands Block -->
             <div>
               <h3 class="text-base md:text-lg lg:text-2xl font-bold mb-2 md:mb-3 lg:mb-4 uppercase">ARENA</h3>
-              <div class="flex flex-col space-y-2 md:space-y-3 lg:space-y-4">
+              <div class="flex flex-col items-start space-y-2 md:space-y-3 lg:space-y-4">
                 <div
                   v-for="stand in arena1Stands"
                   :key="stand.id"
@@ -70,25 +70,33 @@
                   <img
                     :src="stand.image"
                     :alt="stand.name"
-                    class="w-14 h-14 md:w-12 md:h-12 lg:w-16 lg:h-16 flex-shrink-0 aspect-square object-cover rounded-full"
+                    class="w-14 h-14 md:w-12 md:h-12 lg:w-16 lg:h-16 flex-shrink-0 aspect-square object-cover rounded-lg"
                   />
                   <div class="flex flex-col items-start">
-                    <span class="text-xs md:text-sm font-semibold">{{ stand.name.split(' ')[0] }}</span>
-                    <span class="text-xs md:text-sm font-semibold">{{ stand.name.split(' ')[1] || '' }}</span>
+                    <span class="text-xs md:text-sm font-semibold">{{ stand.name }}</span>
                   </div>
                 </div>
               </div>
             </div>
 
             <!-- Info Blocks for Arena -->
-            <div class="flex flex-col space-y-2 md:space-y-3">
+            <div class="flex flex-col items-start space-y-2 md:space-y-3">
+
+              <BaseButton
+                variant="primary"
+                size="sm"
+                @click="scrollToSection('arena2')"
+                class="rounded-lg md:rounded-xl"
+              >
+                TRIAL STAND
+              </BaseButton>
               <div
                 v-for="(stat, index) in sidebarStats"
                 :key="`sidebar-stat-${stat.type}-${index}`"
                 class="info-block"
               >
                 <p class="text-xs md:text-sm font-bold text-black break-words">
-                  {{ stat.title }} {{ stat.number }}{{ stat.plus ? '+' : '' }}
+                  {{ stat.number }}{{ stat.plus ? '+' : '' }} <br> {{ stat.title }}
                 </p>
                 <p v-if="stat.subtitle" class="text-[10px] md:text-xs text-gray-600 break-words mt-1">
                   {{ stat.subtitle }}
@@ -130,7 +138,7 @@
                 class="info-block"
               >
                 <p class="text-xs md:text-sm font-bold text-black break-words">
-                  {{ stat.title }} {{ stat.number }}{{ stat.plus ? '+' : '' }}
+                  {{ stat.number }}{{ stat.plus ? '+' : '' }} <br> {{ stat.title }}
                 </p>
                 <p v-if="stat.subtitle" class="text-[10px] md:text-xs text-gray-600 break-words mt-1">
                   {{ stat.subtitle }}
@@ -172,7 +180,7 @@
                 class="info-block bg-black rounded-lg p-2 md:p-3"
               >
                 <p class="text-xs md:text-sm font-bold text-white break-words">
-                  {{ stat.title }} {{ stat.number }}{{ stat.plus ? '+' : '' }}
+                  {{ stat.number }}{{ stat.plus ? '+' : '' }} <br> {{ stat.title }}
                 </p>
                 <p v-if="stat.subtitle" class="text-[10px] md:text-xs text-gray-300 break-words mt-1">
                   {{ stat.subtitle }}
@@ -188,26 +196,16 @@
         <!-- Arena 1 Section -->
         <section
           ref="exhibitionSection1Ref"
-          id="arena1"
           class="exhibition-section"
         >
-          <div ref="exhibitionContainer1Ref" class="container mx-auto">
-            <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-2 md:mb-3">Arena Participants' offers</h2>
+          <div ref="exhibitionContainer1Ref" class="px-4 md:px-6 lg:px-8 mb-12 md:mb-16">
+            <h2 id="arena1-offers" class="text-xl md:text-2xl lg:text-3xl font-bold mb-2 md:mb-3">Arena Participants' offers</h2>
             <h3 class="text-base md:text-lg lg:text-xl text-black-70 mb-4 md:mb-6">Markets are built by those who show up</h3>
 
             <!-- Molecule Carousel -->
-            <div class="relative mt-[100px] mb-12">
-              <div v-if="moleculesLoading" class="text-center py-8">
-                <p class="text-gray-500">Loading molecules...</p>
-              </div>
-              <div v-else-if="moleculesError" class="text-center py-8">
-                <p class="text-red-500">Error loading molecules: {{ moleculesError }}</p>
-              </div>
-              <div v-else-if="molecules.length === 0" class="text-center py-8">
-                <p class="text-gray-500">No molecules available</p>
-              </div>
+            <div class="relative md:mt-[100px] mt-14 lg:mb-12 mb-8">
               <Transition
-                v-else
+                v-if="molecules.length > 0"
                 name="fade"
                 mode="out-in"
               >
@@ -226,8 +224,8 @@
             <!-- Show Your Offer Button -->
             <BaseButton
               variant="primary"
-              size="sm"
-              class="mt-4 md:mt-6 mx-auto block bg-black text-white hover:bg-black/90 text-[10px] md:text-xs px-4 md:px-6 py-2 md:py-2.5"
+              size="md"
+              class="mx-auto"
               @click="scrollToEmptyMolecule"
             >
               Show your offer
@@ -235,7 +233,7 @@
 
             <!-- Show Your Offer Section -->
             <div class="mt-8 md:mt-12">
-              <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-2 md:mb-3">Trial Showcase stand
+              <h2 id="arena1-trial" class="text-xl md:text-2xl lg:text-3xl font-bold mb-2 md:mb-3">Trial Showcase stand
               </h2>
               <h3 class="text-base md:text-lg lg:text-xl text-black-70 mb-4 md:mb-6">
                 Trial 1 hour Showcase Spot (FREE) +5 leads (FREE)
@@ -286,7 +284,6 @@
                     <BaseButton
                       variant="primary"
                       size="sm"
-                      class="bg-black text-white hover:bg-black/90 text-xs md:text-sm px-4 md:px-6 py-2 md:py-2.5"
                       @click="scrollToSection('arena1')"
                     >
                       You are usefull with...
@@ -297,7 +294,7 @@
               </div>
             </div>
 
-            <div class="flex justify-center gap-4">
+            <div class="flex flex-col md:flex-row justify-center gap-4">
             <!-- WhatsApp Button -->
               <WhatsAppButton
                 phone-number="971585753302"
@@ -328,12 +325,12 @@
         <section
           ref="forumSection1Ref"
           id="forum1"
-          class="forum-section md:px-6 lg:px-8"
+          class="forum-section px-4 md:px-6 lg:px-8"
         >
-          <div ref="forumContainer1Ref" class="container mx-auto py-4 md:py-6">
+          <div ref="forumContainer1Ref">
             <div class="flex flex-row justify-between items-center mb-4 md:mb-6">
-              <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold">Speakers</h2>
-              <div v-if="showViewAllButton" class="view-all-button-wrapper">
+              <h2 id="forum-speakers" class="text-xl md:text-2xl lg:text-3xl font-bold">Speakers</h2>
+              <div v-if="showViewAllButton"  class="view-all-button-wrapper hidden md:block">
                 <BaseButton variant="primary" @click="scrollToSection('forum1')">
                   <span>View all speakers</span>
                 </BaseButton>
@@ -364,33 +361,20 @@
               </div>
             </div>
           </div>
-        </section>
 
-        <!-- Agenda Section -->
-        <section
-          ref="agendaSection1Ref"
-          id="agenda1"
-          class="agenda-section md:px-6 lg:px-8"
-        >
-          <div ref="agendaContainer1Ref" class="py-4 md:py-6">
+          <div ref="forumContainer2Ref" class="mb-12 md:mb-16">
             <ClientOnly>
               <ProgramSection
-                id="agenda-program"
+                id="forum-program"
                 title="15<sup>th</sup> Fall Winter 2026"
                 visit-button-link="https://docs.google.com/forms/d/11I7bcoDEzErBszt2UfZqf04LAjljlpkBhdRTD6CrC7g/edit?fbclid=PAZXh0bgNhZW0CMTEAAabTXlVnA-8uMswE4mM1iOQkULaorR2fFi9eZsVZlgEe1jMJH0Kb7OcDJJk_aem_LIewtA-gbtt6seDB3ZE4pw"
                 :tabs="programTabs"
               />
             </ClientOnly>
           </div>
-        </section>
 
-        <!-- Partners Section -->
-        <section
-          id="partners"
-          class="partners-section md:px-6 lg:px-8"
-        >
-          <div class="container mx-auto py-4 md:py-6">
-            <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6">Partners & Media</h2>
+          <div ref="forumContainer3Ref" class="mb-12 md:mb-16">
+            <h2 id="forum-partners" class="text-xl md:text-2xl lg:text-3xl font-bold mb-4 md:mb-6">Partners & Media</h2>
             <div class="grid grid-cols-4 md:grid-cols-8 xl:grid-cols-9 gap-4 justify-items-center md:justify-items-start">
               <div 
                 v-for="(partner, index) in partners"
@@ -405,7 +389,9 @@
               </div>
             </div>
           </div>
+
         </section>
+
 
         <!-- Arena 2 Section -->
         <section
@@ -413,8 +399,8 @@
           id="arena2"
           class="exhibition-section md:px-6 lg:px-8"
         >
-          <div ref="exhibitionContainer2Ref" class="container mx-auto py-4 md:py-6">
-            <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6">Arena. Trial 1 Hour Spot</h2>
+          <div ref="exhibitionContainer2Ref" class="mb-12 md:mb-16 px-4 md:px-6 lg:px-8">
+            <h2 id="arena2-trial" class="text-xl md:text-2xl lg:text-3xl font-bold mb-4 md:mb-6">Arena. Trial 1 Hour Spot</h2>
 
             <div class="space-y-6 mb-8">
               <!-- Первое фото и текст на одной строке -->
@@ -475,10 +461,10 @@
         <section
           ref="exhibitionSection3Ref"
           id="arena3"
-          class="exhibition-section md:px-6 lg:px-8"
+          class="exhibition-section px-4 md:px-6 lg:px-8"
         >
-          <div ref="exhibitionContainer3Ref" class="container mx-auto py-4 md:py-6">
-            <h2 class="text-xl md:text-4xl xl:mb-[75px] md:mb-[50px] mb-7">SHOWCASE SPOT</h2>
+          <div ref="exhibitionContainer3Ref">
+            <h2 id="arena3-showcase" class="text-xl md:text-2xl lg:text-3xl font-bold mb-4 md:mb-6">Showcase Spot</h2>
             
             <div class="relative -mx-4 md:mx-0 mb-8">
               <div class="flex md:grid md:grid-cols-2 gap-6 overflow-x-auto pb-4 md:pb-0 px-4 md:px-0 snap-x snap-mandatory">
@@ -941,7 +927,7 @@ onUnmounted(() => {
 }
 
 .sidebar {
-  width: 120px;
+  width: 80px;
   flex-shrink: 0;
   align-self: flex-start;
   height: 100vh;

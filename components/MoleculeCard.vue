@@ -5,17 +5,17 @@
     <div class="bg-gray-100 rounded-tl-lg md:rounded-tl-2xl rounded-tr-lg md:rounded-tr-2xl">
       <div class="flex flex-row justify-between items-start gap-2 md:gap-4 lg:gap-6">
         <!-- Left Text Block -->
-        <div class="flex-1 max-w-[40%] relative py-2 md:py-4 px-2">
-          <p class="absolute top-[-16px] md:top-[-20px] left-0 text-[10px] md:text-xs text-black-70 mb-1 md:mb-2">Useful</p>
-          <p class="text-xs md:text-sm font-medium text-black leading-tight md:leading-normal">
+        <div class="flex-1 max-w-[40%] relative py-1.5 md:py-3 px-2">
+          <p class="absolute top-[-14px] md:top-[-18px] left-0 text-[9px] md:text-xs text-black-70 mb-1 md:mb-2">Useful</p>
+          <p class="text-[11px] md:text-sm font-medium text-black leading-snug md:leading-normal">
             {{ leftText }}
           </p>
         </div>
 
         <!-- Right Text Block -->
-        <div class="flex-1 max-w-[40%] text-right py-2 md:py-4 px-2">
-          <p class="absolute top-[-16px] md:top-[-20px] right-0 text-[10px] md:text-xs text-black-70 mb-1 md:mb-2">Offer</p>
-          <p class="text-xs md:text-sm font-medium text-black leading-tight md:leading-normal">
+        <div class="flex-1 max-w-[40%] text-right py-1.5 md:py-3 px-2 relative">
+          <p class="absolute top-[-14px] md:top-[-18px] right-0 text-[9px] md:text-xs text-black-70 mb-1 md:mb-2">Offer</p>
+          <p class="text-[11px] md:text-sm font-medium text-black leading-snug md:leading-normal">
             {{ rightText }}
           </p>
         </div>
@@ -34,23 +34,27 @@
     </div>
 
     <!-- Bottom Section (Yellow) -->
-    <div class="bg-yellow-400 px-2 py-2 md:py-3 relative rounded-bl-lg md:rounded-bl-2xl rounded-br-lg md:rounded-br-2xl">
-      <div class="flex items-center justify-center mb-0.5 md:mb-1">
-        <p class="text-xs md:text-base text-black text-center">
+    <div class="bg-yellow-400 px-2 pt-2 pb-3 md:py-3 relative rounded-bl-lg md:rounded-bl-2xl rounded-br-lg md:rounded-br-2xl">
+      <div class="flex flex-row items-center justify-center gap-1 md:flex-col md:gap-0 mb-0.5 md:mb-1">
+        <p class="text-[11px] md:text-base text-black text-center leading-snug md:leading-normal">
           {{ name }}
         </p>
+        <span v-if="company" class="hidden md:block w-1 h-1 rounded-full bg-black mx-1"></span>
+        <span v-if="company" class="md:hidden w-1 h-1 rounded-full bg-black"></span>
+        <p v-if="company" class="text-[11px] md:text-base font-bold text-black text-center leading-snug md:leading-normal">
+          {{ company }}
+        </p>
       </div>
-      <p class="text-xs md:text-base font-extrabold text-black text-center">
-        {{ company }}
-      </p>
-      <BaseButton
-        variant="primary"
-        size="sm"
-        class="absolute right-1 md:right-2 top-1/2 transform -translate-y-1/2 bg-black text-white hover:bg-black/90 text-[10px] md:text-xs px-2 md:px-3 py-1 md:py-1.5"
-        @click="openModal"
-      >
-        Inquire offer
-      </BaseButton>
+      <div class="mt-2 flex justify-center md:mt-0 md:block">
+        <BaseButton
+          variant="primary"
+          size="sm"
+          class="px-3 py-1 md:px-3 md:py-1.5 bg-black text-white hover:bg-black/90 text-[10px] md:text-xs md:absolute md:right-2 md:top-1/2 md:-translate-y-1/2 md:transform"
+          @click="openModal"
+        >
+          Inquire offer
+        </BaseButton>
+      </div>
     </div>
     </div>
 

@@ -14,12 +14,12 @@
     
     <div v-else class="space-y-3">
       <h3 class="text-lg font-semibold mb-4">COMPANIES APPLICATIONS ({{ companies.length }})</h3>
-      <div class="space-y-3 pr-2">
+      <div class="space-y-3 relative">
         <div 
           v-for="(company, index) in companies" 
           :key="index"
           :class="[
-            'flex items-center justify-between p-3 rounded-lg border transition-all duration-300',
+            'flex items-center justify-between px-2 pb-2 md:p-3 pt-6 md:pt-3 rounded-lg border transition-all duration-300',
             isNewCompany(company) 
               ? 'bg-green-50 border-green-200 shadow-md' 
               : 'bg-gray-50 border-gray-200'
@@ -31,7 +31,7 @@
             </div>
             <div class="flex-1">
               <div class="flex items-center gap-2">
-                <div class="font-medium text-gray-900">
+                <div class="text-xs md:text-base font-medium text-gray-900">
                   {{ maskCompanyName(company.companyName) }}{{ company.industry ? ' | ' + company.industry : '' }}
                 </div>
                 <span 
@@ -136,20 +136,20 @@ const getStatusLabelStyle = (status) => {
     case 'GARANTEED':
     case 'GUARANTEED':
       return {
-        class: 'px-2 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full',
+        class: 'absolute top-0 right-2 sm:static px-2 py-1 text-[8px] md:text-xs font-semibold text-green-700 md:bg-green-100 rounded-sm md:rounded-full',
         text: 'GARANTEED'
       }
     case 'RECOMMENDED':
     case 'RECOMENDED': // Учитываем опечатку в данных
     case 'RECOMМENDED': // Учитываем кириллическую М
       return {
-        class: 'px-2 py-1 text-xs font-semibold text-blue-700 bg-blue-100 rounded-full',
+        class: 'absolute top-0 right-2 sm:static px-2 py-1 text-[8px] md:text-xs font-semibold text-blue-700 md:bg-blue-100 rounded-sm md:rounded-full',
         text: 'RECOMMENDED'
       }
     case 'WAITLIST':
     default:
       return {
-        class: 'px-2 py-1 text-xs font-semibold text-orange-700 bg-orange-100 rounded-full',
+        class: 'absolute top-0 right-2 sm:static px-2 py-1 text-[8px] md:text-xs font-semibold text-orange-700 md:bg-orange-100 rounded-sm md:rounded-full',
         text: 'WAITLIST'
       }
   }

@@ -147,8 +147,8 @@ const updateSlidesPerView = () => {
     // lg - 2 слайда
     slidesPerView.value = 2
   } else {
-    // md и меньше - 1 слайд
-    slidesPerView.value = 1
+    // md и меньше - 2 слайда для мобильных
+    slidesPerView.value = 2
   }
 
   // Ограничиваем currentIndex, чтобы не выйти за границы
