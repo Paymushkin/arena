@@ -4,11 +4,10 @@
     class="arena-section w-full min-h-screen bg-[#f9fafb] relative"
   >
     <div class="flex flex-row w-full relative container mx-auto">
-      <!-- Sidebar -->
+      <!-- Sidebar (скрыт на мобильных) -->
       <aside
         ref="sidebarRef"
-        class="sidebar z-10"
-        :class="currentSection === 'arena1' ? 'hidden md:block' : ''"
+        class="sidebar z-10 hidden md:block"
       >
         <div class="md:p-3 py-2 lg:p-6">
           <!-- Forum 1 Sidebar Content -->
@@ -193,7 +192,7 @@
       </aside>
 
       <!-- Main Content -->
-      <main class="content flex-1 min-h-screen bg-white py-4 md:py-6">
+      <main class="content flex-1 min-h-screen bg-white py-4 md:py-6 w-full">
         <!-- Arena 1 Section -->
         <section
           ref="exhibitionSection1Ref"
@@ -322,74 +321,261 @@
           </div>
         </section>
 
-        <!-- Forum 1 Section -->
-        <section
-          ref="forumSection1Ref"
-          id="forum1"
-          class="forum-section px-4 md:px-6 lg:px-8"
-        >
-          <div ref="forumContainer1Ref">
-            <div class="flex flex-row justify-between items-center mb-4 md:mb-6">
-              <h2 id="forum-speakers" class="text-xl md:text-2xl lg:text-3xl font-bold">Speakers</h2>
-              <div v-if="showViewAllButton"  class="view-all-button-wrapper hidden md:block">
-                <BaseButton variant="primary" @click="scrollToSection('forum1')">
-                  <span>View all speakers</span>
-                </BaseButton>
+        <div class="mobile-section-wrapper flex flex-row">
+          <!-- Клон сайдбара для мобильных -->
+          <aside class="sidebar-mobile z-10 md:hidden">
+            <div class="md:p-3 py-2 lg:p-6">
+              <!-- Forum 1 Sidebar Content -->
+              <div v-if="activeSidebarType === 'forum1'" class="space-y-4 md:space-y-6">
+                <!-- Speakers Block -->
+                <div>
+                  <h3 class="text-xs md:text-sm lg:text-base font-bold mb-2 md:mb-3 lg:mb-4 uppercase">FORUM</h3>
+                  <div class="flex flex-col items-start space-y-2 md:space-y-3 lg:space-y-4">
+                    <TransitionGroup name="fade" tag="div" class="flex flex-col gap-2 md:gap-3 lg:gap-4">
+                    <div
+                        v-for="speaker in displayedSpeakers"
+                      :key="speaker.id"
+                      class="speaker-item cursor-pointer transition-opacity hover:opacity-70 flex flex-col md:flex-row items-center gap-2 md:gap-3"
+                      @click="scrollToSection('forum1')"
+                    >
+                      <img
+                          :src="speaker.photo || 'https://storage.yandexcloud.net/videos-meyou/arena/images/1.png'"
+                        :alt="speaker.name"
+                        class="w-10 h-10 md:w-12 md:h-12 lg:w-16 lg:h-16 flex-shrink-0 aspect-square object-cover rounded-full"
+                      />
+                      <div class="flex flex-col items-start">
+                          <span class="text-xs md:text-sm font-semibold">{{ speaker.name }}</span>
+                          <span v-if="speaker.company" class="text-xs md:text-sm text-gray-600">{{ speaker.company }}</span>
+                      </div>
+                    </div>
+                    </TransitionGroup>
+                  </div>
+                </div>
+
+                <!-- Info Blocks for Forum -->
+                <div class="flex flex-col space-y-2 md:space-y-3">
+                  <div
+                    v-for="(stat, index) in sidebarStats"
+                    :key="`sidebar-stat-${stat.type}-${index}`"
+                    class="info-block"
+                  >
+                    <p class="text-xs md:text-sm font-bold text-black break-words">
+                      {{ stat.number }}{{ stat.plus ? '+' : '' }} <br> {{ stat.title }}
+                    </p>
+                    <p v-if="stat.subtitle" class="text-[10px] md:text-xs text-gray-600 break-words mt-1">
+                      {{ stat.subtitle }}
+                    </p>
+                  </div>
+                </div>
               </div>
+
+
+              <!-- Arena 1 Sidebar Content -->
+              <div v-else-if="activeSidebarType === 'arena1'" class="space-y-4 md:space-y-6">
+                <!-- Stands Block -->
+                <div>
+                  <h3 class="text-base md:text-lg lg:text-2xl font-bold mb-2 md:mb-3 lg:mb-4 uppercase">ARENA</h3>
+                  <div class="flex flex-col items-start space-y-2 md:space-y-3 lg:space-y-4">
+                    <div
+                      v-for="stand in arena1Stands"
+                      :key="stand.id"
+                      class="stand-item cursor-pointer transition-opacity hover:opacity-70 flex flex-col md:flex-row items-center gap-2 md:gap-3"
+                      @click="scrollToSection('arena1')"
+                    >
+                      <img
+                        :src="stand.image"
+                        :alt="stand.name"
+                        class="w-14 h-14 md:w-12 md:h-12 lg:w-16 lg:h-16 flex-shrink-0 aspect-square object-cover rounded-lg"
+                      />
+                      <div class="flex flex-col items-start">
+                        <span class="text-xs md:text-sm font-semibold">{{ stand.name }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Info Blocks for Arena -->
+                <div class="flex flex-col items-start space-y-2 md:space-y-3">
+
+                  <BaseButton
+                    variant="primary"
+                    size="sm"
+                    @click="scrollToSection('arena2')"
+                    class="rounded-lg md:rounded-xl"
+                  >
+                    TRIAL STAND
+                  </BaseButton>
+                  <div
+                    v-for="(stat, index) in sidebarStats"
+                    :key="`sidebar-stat-${stat.type}-${index}`"
+                    class="info-block"
+                  >
+                    <p class="text-xs md:text-sm font-bold text-black break-words">
+                      {{ stat.number }}{{ stat.plus ? '+' : '' }} <br> {{ stat.title }}
+                    </p>
+                    <p v-if="stat.subtitle" class="text-[10px] md:text-xs text-gray-600 break-words mt-1">
+                      {{ stat.subtitle }}
+                    </p>
+                  </div>
+                </div>
             </div>
 
-            <!-- Speakers Grid -->
-            <div class="mb-6 md:mb-8">
-              <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-                <div
-                  v-for="speaker in gridSpeakers"
-                  :key="speaker.id"
-                  class="speaker-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
-                >
-                  <div class="aspect-[3/4] overflow-hidden">
-                    <img
-                      :src="speaker.photo || 'https://storage.yandexcloud.net/videos-meyou/arena/images/1.png'"
-                      :alt="speaker.name"
-                      class="w-full h-full object-cover"
-                      loading="lazy"
-                    />
+              <!-- Arena 2 Sidebar Content -->
+              <div v-else-if="activeSidebarType === 'arena2'" class="space-y-4 md:space-y-6">
+                <!-- Stands Block -->
+                <div>
+                  <h3 class="text-base md:text-lg lg:text-2xl font-bold mb-2 md:mb-3 lg:mb-4 uppercase">ARENA</h3>
+                  <div class="flex flex-col space-y-2 md:space-y-3 lg:space-y-4">
+                    <div
+                      v-for="stand in arena2Stands"
+                      :key="stand.id"
+                      class="stand-item cursor-pointer transition-opacity hover:opacity-70 flex flex-col md:flex-row items-center gap-2 md:gap-3"
+                      @click="scrollToSection('arena2')"
+                    >
+                      <img
+                        :src="stand.image"
+                        :alt="stand.name"
+                        class="w-14 h-14 md:w-12 md:h-12 lg:w-16 lg:h-16 flex-shrink-0 aspect-square object-cover rounded-full"
+                      />
+                      <div class="flex flex-col items-start">
+                        <span class="text-xs md:text-sm font-semibold">{{ stand.name.split(' ')[0] }}</span>
+                        <span class="text-xs md:text-sm font-semibold">{{ stand.name.split(' ')[1] || '' }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Info Blocks for Arena -->
+                <div class="flex flex-col space-y-2 md:space-y-3">
+                  <div
+                    v-for="(stat, index) in sidebarStats"
+                    :key="`sidebar-stat-${stat.type}-${index}`"
+                    class="info-block"
+                  >
+                    <p class="text-xs md:text-sm font-bold text-black break-words">
+                      {{ stat.number }}{{ stat.plus ? '+' : '' }} <br> {{ stat.title }}
+                    </p>
+                    <p v-if="stat.subtitle" class="text-[10px] md:text-xs text-gray-600 break-words mt-1">
+                      {{ stat.subtitle }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Arena 3 Sidebar Content -->
+              <div v-else-if="activeSidebarType === 'arena3'" class="space-y-4 md:space-y-6">
+                <!-- Stands Block -->
+                <div>
+                  <h3 class="text-base md:text-lg lg:text-2xl font-bold mb-2 md:mb-3 lg:mb-4 uppercase">ARENA</h3>
+                  <div class="flex flex-col space-y-2 md:space-y-3 lg:space-y-4">
+                    <div
+                      v-for="stand in arena3Stands"
+                      :key="stand.id"
+                      class="stand-item cursor-pointer transition-opacity hover:opacity-70 flex flex-col md:flex-row items-center gap-2 md:gap-3"
+                      @click="scrollToSection('arena3')"
+                    >
+                      <img
+                        :src="stand.image"
+                        :alt="stand.name"
+                        class="w-14 h-14 md:w-12 md:h-12 lg:w-16 lg:h-16 flex-shrink-0 aspect-square object-cover rounded-full"
+                      />
+                      <div class="flex flex-col items-start">
+                        <span class="text-xs md:text-sm font-semibold">{{ stand.name.split(' ')[0] }}</span>
+                        <span class="text-xs md:text-sm font-semibold">{{ stand.name.split(' ')[1] || '' }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Info Blocks for Arena -->
+                <div class="flex flex-col space-y-2 md:space-y-3">
+                  <div
+                    v-for="(stat, index) in sidebarStats"
+                    :key="`sidebar-stat-${stat.type}-${index}`"
+                    class="info-block bg-black rounded-lg p-2 md:p-3"
+                  >
+                    <p class="text-xs md:text-sm font-bold text-white break-words">
+                      {{ stat.number }}{{ stat.plus ? '+' : '' }} <br> {{ stat.title }}
+                    </p>
+                    <p v-if="stat.subtitle" class="text-[10px] md:text-xs text-gray-300 break-words mt-1">
+                      {{ stat.subtitle }}
+              </p>
             </div>
-                  <div class="p-3 md:p-4">
-                    <h3 class="text-sm md:text-base font-semibold mb-1">{{ speaker.name }}</h3>
-                    <p v-if="speaker.company" class="text-xs md:text-sm text-gray-600">{{ speaker.company }}</p>
+          </div>
+              </div>
+            </div>
+          </aside>
+
+          <!-- Контент секций -->
+          <div class="mobile-section-content flex-1">
+          <!-- Forum 1 Section -->
+          <section
+            ref="forumSection1Ref"
+            id="forum1"
+            class="forum-section px-4 md:px-6 lg:px-8"
+          >
+            <div ref="forumContainer1Ref">
+              <div class="flex flex-row justify-between items-center mb-4 md:mb-6">
+                <h2 id="forum-speakers" class="text-xl md:text-2xl lg:text-3xl font-bold">Speakers</h2>
+                <div v-if="showViewAllButton"  class="view-all-button-wrapper hidden md:block">
+                  <BaseButton variant="primary" @click="scrollToSection('forum1')">
+                    <span>View all speakers</span>
+                  </BaseButton>
+                </div>
+              </div>
+
+              <!-- Speakers Grid -->
+              <div class="mb-6 md:mb-8">
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                  <div
+                    v-for="speaker in gridSpeakers"
+                    :key="speaker.id"
+                    class="speaker-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                  >
+                    <div class="aspect-[3/4] overflow-hidden">
+                      <img
+                        :src="speaker.photo || 'https://storage.yandexcloud.net/videos-meyou/arena/images/1.png'"
+                        :alt="speaker.name"
+                        class="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+              </div>
+                    <div class="p-3 md:p-4">
+                      <h3 class="text-sm md:text-base font-semibold mb-1">{{ speaker.name }}</h3>
+                      <p v-if="speaker.company" class="text-xs md:text-sm text-gray-600">{{ speaker.company }}</p>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div ref="forumContainer2Ref" class="mb-12 md:mb-16">
-            <ClientOnly>
-              <ProgramSection
-                id="forum-program"
-                title="15<sup>th</sup> Fall Winter 2026"
-                visit-button-link="https://docs.google.com/forms/d/11I7bcoDEzErBszt2UfZqf04LAjljlpkBhdRTD6CrC7g/edit?fbclid=PAZXh0bgNhZW0CMTEAAabTXlVnA-8uMswE4mM1iOQkULaorR2fFi9eZsVZlgEe1jMJH0Kb7OcDJJk_aem_LIewtA-gbtt6seDB3ZE4pw"
-                :tabs="programTabs"
-              />
-            </ClientOnly>
-          </div>
-
-          <div ref="forumContainer3Ref" class="mb-12 md:mb-16">
-            <h2 id="forum-partners" class="text-xl md:text-2xl lg:text-3xl font-bold mb-4 md:mb-6">Partners & Media</h2>
-            <div class="grid grid-cols-4 md:grid-cols-8 xl:grid-cols-9 gap-4 justify-items-center md:justify-items-start">
-              <div 
-                v-for="(partner, index) in partners"
-                :key="partner.id"
-                class="flex justify-center items-center"
-              >
-                <img  
-                  :src="partner.image" 
-                  :alt="partner.name" 
-                  class="object-center" 
+            <div ref="forumContainer2Ref" class="mb-12 md:mb-16">
+              <ClientOnly>
+                <ProgramSection
+                  id="forum-program"
+                  title="15<sup>th</sup> Fall Winter 2026"
+                  visit-button-link="https://docs.google.com/forms/d/11I7bcoDEzErBszt2UfZqf04LAjljlpkBhdRTD6CrC7g/edit?fbclid=PAZXh0bgNhZW0CMTEAAabTXlVnA-8uMswE4mM1iOQkULaorR2fFi9eZsVZlgEe1jMJH0Kb7OcDJJk_aem_LIewtA-gbtt6seDB3ZE4pw"
+                  :tabs="programTabs"
                 />
+              </ClientOnly>
+            </div>
+
+            <div ref="forumContainer3Ref" class="mb-12 md:mb-16">
+              <h2 id="forum-partners" class="text-xl md:text-2xl lg:text-3xl font-bold mb-4 md:mb-6">Partners & Media</h2>
+              <div class="grid grid-cols-4 md:grid-cols-8 xl:grid-cols-9 gap-4 justify-items-center md:justify-items-start">
+                <div 
+                  v-for="(partner, index) in partners"
+                  :key="partner.id"
+                  class="flex justify-center items-center"
+                >
+                  <img  
+                    :src="partner.image" 
+                    :alt="partner.name" 
+                    class="object-center" 
+                  />
+                </div>
               </div>
             </div>
-          </div>
 
         </section>
 
@@ -398,167 +584,169 @@
         <section
           ref="exhibitionSection2Ref"
           id="arena2"
-          class="exhibition-section md:px-6 lg:px-8"
-        >
-          <div ref="exhibitionContainer2Ref" class="mb-12 md:mb-16 px-4 md:px-6 lg:px-8">
-            <h2 id="arena2-trial" class="text-xl md:text-2xl lg:text-3xl font-bold mb-4 md:mb-6">Arena. Trial 1 Hour Spot</h2>
+            class="exhibition-section md:px-6 lg:px-8"
+          >
+            <div ref="exhibitionContainer2Ref" class="mb-12 md:mb-16 px-4 md:px-6 lg:px-8">
+              <h2 id="arena2-trial" class="text-xl md:text-2xl lg:text-3xl font-bold mb-4 md:mb-6">Arena. Trial 1 Hour Spot</h2>
 
-            <div class="space-y-6 mb-8">
-              <!-- Первое фото и текст на одной строке -->
-              <div class="flex flex-col md:flex-row gap-6">
-                <div class="rounded-2xl overflow-hidden md:w-1/2">
-                  <img src="https://storage.yandexcloud.net/videos-meyou/arena/images/trial/1.webp" alt="Trial showcase spots" class="w-full object-contain">
-                </div>
-                <div class="md:w-1/2">
-                  <p class="text-base md:text-xl xl:text-2xl mb-6">
-                    Trial Showcase Spots — How it Works
-                  </p>
-                  
-                  <ul class="text-sm md:text-base xl:text-lg space-y-2 mb-6">
-                   <li>• Each day offers 20 Showcase Spots, divided into 4 sessions of 2 hours each — that's 80 trial slots per day.</li>
-                   <li>• Each selected participant also receives 10 lead chats with EFW Market visitors.</li>
-                   <li>• Allocation is not automatic. From the waitlist, participants are chosen at the organizers' discretion, to ensure a balanced mix of services for our audience.</li>
-                   <li>• These trial spots are subsidized by Dubai Departments and Emirates Fashion Week as a goodwill initiative to support SMEs in Dubai's beauty and design industries.</li>
-                   <li>• Important: if all 60 full-day paid spots are taken, the 20 trial spots may also be sold, which reduces the chances for waitlist applicants.</li>
-                   <li>• You can always skip the waitlist and secure a guaranteed full-day spot (3,000 AED) — just as 60+ companies already have</li>
-                  </ul>
-                </div>
-            </div>
-
-              <!-- Второе и третье фото в ряд -->
-              <div class="flex flex-col md:flex-row gap-6">
-                <div class="rounded-2xl overflow-hidden">
-                  <img src="https://storage.yandexcloud.net/videos-meyou/arena/images/trial/2.webp" alt="Trial showcase spots" class="object-contain">
-            </div>
-
-                <div class="rounded-2xl overflow-hidden">
-                  <img src="https://storage.yandexcloud.net/videos-meyou/arena/images/trial/3.webp" alt="Trial showcase spots" class="object-contain">
-                </div>
-              </div>
-            </div>
-
-            <p class="text-sm md:text-base xl:text-lg text-gray-600 mt-2 text-center">
-              competition with other waitlist companies; trial slots reduced if full-day spots are purchased
-            </p>
-            
-            <div class="flex flex-col items-end gap-3 mb-8">
-              <BaseButton
-                id="join-waitlist"
-                variant="primary"
-                @click="showWaitlistForm = true">
-                <span>Join Waitlist</span>
-                <span>></span>
-              </BaseButton>
-            </div>
-
-            <!-- Companies List -->
-            <div class="mt-12">
-              <CompaniesList ref="companiesListRef" @companies-count-updated="updateCompaniesCount" />
-            </div>
-          </div>
-        </section>
-
-  <!-- Arena 3 Section -->      
-        <section
-          ref="exhibitionSection3Ref"
-          id="arena3"
-          class="exhibition-section px-4 md:px-6 lg:px-8"
-        >
-          <div ref="exhibitionContainer3Ref">
-            <h2 id="arena3-showcase" class="text-xl md:text-2xl lg:text-3xl font-bold mb-4 md:mb-6">Showcase Spot</h2>
-            
-            <div class="relative -mx-4 md:mx-0 mb-8">
-              <div class="flex md:grid md:grid-cols-2 gap-6 overflow-x-auto pb-4 md:pb-0 px-4 md:px-0 snap-x snap-mandatory">
-                <div class="relative aspect-[907/1030] bg-gray-100 rounded-2xl overflow-hidden min-w-[85%] md:min-w-0 snap-center">
-                  <video 
-                    class="w-full h-full object-cover"
-                    muted
-                    autoplay
-                    loop
-                    playsinline
-                    poster="https://storage.yandexcloud.net/videos-meyou/arena/images/stand-1.webp"
-                  >
-                    <source src="https://storage.yandexcloud.net/videos-meyou/efw2025/promo.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
-                  </video>
-                </div>
-                <div class="relative aspect-[907/1030] bg-gray-100 rounded-2xl overflow-hidden min-w-[85%] md:min-w-0 snap-center">
-                  <img src="https://storage.yandexcloud.net/videos-meyou/arena/images/offer/1.webp" alt="Showcase interior" class="w-full h-full object-contain">
-                </div>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 lg:gap-10 md:gap-12 gap-7 mb-8">
-              <div>
-                <h3 class="md:text-2xl md:mb-5 mb-2 font-bold">Good for:</h3>
-                <ul class="text-sm md:text-base xl:text-lg space-y-2">
-                  <li>• Medical & Aesthetic Clinics – General clinics, plastic surgery, dentistry.   </li>
-                  <li>• Health & Wellness – Nutritionists, dietitians, medical & wellness tourism.</li>
-                  <br><br>
-                  <li>• Beauty & Cosmetics – Cosmetic brands, makeup artists, brow & lash services, nail care.</li>
-                  <li>• Personal Care & Wellness – Cosmetology, massage, salons, spas, barbershops.</li>
-                  <br><br>
-                  <li>• Fitness & Events – Gyms, wellness studios, wedding makeup & beauty services.</li>
-                  <li>• Education & Training – Schools and courses for makeup, cosmetology, and nail services.</li>
-                  <br><br>
-                  <li>• Beauty Tech & Software – CRM, online booking, payment solutions for salons.</li>
-                  <li>• Salon & Clinic Equipment – Furniture and professional tools for beauty salons & medical clinics.</li>
-                </ul>
-              </div>
-              <div class="border border-gray-300 rounded-lg p-4">
-                <h3 class="md:text-2xl md:mb-5 mb-2 font-bold">What's Included:</h3>
-                <ul class="text-sm md:text-base xl:text-lg space-y-2 mb-4">
-                  <li><b>A)</b> One of the 80 Showcase Spots:
-                    <ul class="pl-4 space-y-2 mt-2">
-                      <li>- 8, 9 November (runway days) 20 Spots in the corridors</li>
-                      <li>- 10, 11 November (market days)  20 Spots in the corridors + 60 Spots in the main hall </li>
+              <div class="space-y-6 mb-8">
+                <!-- Первое фото и текст на одной строке -->
+                <div class="flex flex-col md:flex-row gap-6">
+                  <div class="rounded-2xl overflow-hidden md:w-1/2">
+                    <img src="https://storage.yandexcloud.net/videos-meyou/arena/images/trial/1.webp" alt="Trial showcase spots" class="w-full object-contain">
+                  </div>
+                  <div class="md:w-1/2">
+                    <p class="text-base md:text-xl xl:text-2xl mb-6">
+                      Trial Showcase Spots — How it Works
+                    </p>
+                    
+                    <ul class="text-sm md:text-base xl:text-lg space-y-2 mb-6">
+                    <li>• Each day offers 20 Showcase Spots, divided into 4 sessions of 2 hours each — that's 80 trial slots per day.</li>
+                    <li>• Each selected participant also receives 10 lead chats with EFW Market visitors.</li>
+                    <li>• Allocation is not automatic. From the waitlist, participants are chosen at the organizers' discretion, to ensure a balanced mix of services for our audience.</li>
+                    <li>• These trial spots are subsidized by Dubai Departments and Emirates Fashion Week as a goodwill initiative to support SMEs in Dubai's beauty and design industries.</li>
+                    <li>• Important: if all 60 full-day paid spots are taken, the 20 trial spots may also be sold, which reduces the chances for waitlist applicants.</li>
+                    <li>• You can always skip the waitlist and secure a guaranteed full-day spot (3,000 AED) — just as 60+ companies already have</li>
                     </ul>
-                  </li>
-                  <br><br>
-                  <li class="font-bold">B) 50 lead chats per day from EFW visitors (Our Matchmaking technology)</li>
-                  <li><b>C) 50"</b>  Display for presentations with a table and 2 bar chairs </li>
-                  <br><br>
-                  <li><b>D)</b> VIP invitations to all EFW runway shows on 8–11 November 2025</li>
-                </ul>
-                <br><br>
-                <div class="flex items-start text-sm md:text-base xl:text-lg">
-                  <svg class="w-6 h-6 text-amber-400 mr-3 mt-1 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                  </svg>
-                  <div>
-                    <p class="font-medium mb-2"><b>Laptops are not provided.</b> Each exhibitor must bring their own laptop and connect it to the display via HDMI to showcase their company's video or presentation.</p>
+                  </div>
+            </div>
+
+                <!-- Второе и третье фото в ряд -->
+                <div class="flex flex-col md:flex-row gap-6">
+                  <div class="rounded-2xl overflow-hidden">
+                    <img src="https://storage.yandexcloud.net/videos-meyou/arena/images/trial/2.webp" alt="Trial showcase spots" class="object-contain">
+            </div>
+
+                  <div class="rounded-2xl overflow-hidden">
+                    <img src="https://storage.yandexcloud.net/videos-meyou/arena/images/trial/3.webp" alt="Trial showcase spots" class="object-contain">
                   </div>
                 </div>
               </div>
-              <div class="flex flex-col md:gap-4 gap-2">
-                <h3 class="md:text-2xl font-bold">Total</h3>
-                <ul class="text-sm md:text-base xl:text-lg space-y-2">
-                  <li>• 60 Spots</li>
-                </ul>
-                <br><br>
-                <h3 class="md:text-2xl font-bold">Prices</h3>
-                <ul class="text-sm md:text-base xl:text-lg space-y-2">
-                  <li> Early Birds / any day</li>
-                  <li>•<span class="line-through opacity-50"> 3,600 AED / 1,000$ </span> </li>
-                  <li>• 3,000 AED / 800$ / per day</li>
-                </ul>
-                <WhatsAppButton 
-                  phone-number="971585753302"
-                  text="Contact us about Showcase spot"
-                />
-                <a 
-                  href="#join-waitlist"
-                  class="mt-3 inline-flex items-center gap-2 px-6 py-2.5 text-sm rounded-3xl transition-colors border border-black hover:bg-gray-100 w-fit"
-                  @click.prevent="showWaitlistForm = true"
-                >
-                  <span>2h Free Trial Spot Waitlist</span>
-                  <span style="background-color: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 12px; font-weight: bold;">{{ waitlistCount }}</span>
+
+              <p class="text-sm md:text-base xl:text-lg text-gray-600 mt-2 text-center">
+                competition with other waitlist companies; trial slots reduced if full-day spots are purchased
+              </p>
+              
+              <div class="flex flex-col items-end gap-3 mb-8">
+                <BaseButton
+                  id="join-waitlist"
+                  variant="primary"
+                  @click="showWaitlistForm = true">
+                  <span>Join Waitlist</span>
                   <span>></span>
-                </a>
+                </BaseButton>
               </div>
+
+              <!-- Companies List -->
+              <div class="mt-12">
+                <CompaniesList ref="companiesListRef" @companies-count-updated="updateCompaniesCount" />
             </div>
           </div>
         </section>
+
+        <!-- Arena 3 Section -->
+        <section
+          ref="exhibitionSection3Ref"
+          id="arena3"
+            class="exhibition-section px-4 md:px-6 lg:px-8"
+          >
+            <div ref="exhibitionContainer3Ref">
+              <h2 id="arena3-showcase" class="text-xl md:text-2xl lg:text-3xl font-bold mb-4 md:mb-6">Showcase Spot</h2>
+              
+              <div class="relative -mx-4 md:mx-0 mb-8">
+                <div class="flex md:grid md:grid-cols-2 gap-6 overflow-x-auto pb-4 md:pb-0 px-4 md:px-0 snap-x snap-mandatory">
+                  <div class="relative aspect-[907/1030] bg-gray-100 rounded-2xl overflow-hidden min-w-[85%] md:min-w-0 snap-center">
+                    <video 
+                      class="w-full h-full object-cover"
+                      muted
+                      autoplay
+                      loop
+                      playsinline
+                      poster="https://storage.yandexcloud.net/videos-meyou/arena/images/stand-1.webp"
+                    >
+                      <source src="https://storage.yandexcloud.net/videos-meyou/efw2025/promo.mp4" type="video/mp4">
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                  <div class="relative aspect-[907/1030] bg-gray-100 rounded-2xl overflow-hidden min-w-[85%] md:min-w-0 snap-center">
+                    <img src="https://storage.yandexcloud.net/videos-meyou/arena/images/offer/1.webp" alt="Showcase interior" class="w-full h-full object-contain">
+                  </div>
+                </div>
+            </div>
+
+              <div class="grid grid-cols-1 lg:grid-cols-3 lg:gap-10 md:gap-12 gap-7 mb-8">
+                <div>
+                  <h3 class="md:text-2xl md:mb-5 mb-2 font-bold">Good for:</h3>
+                  <ul class="text-sm md:text-base xl:text-lg space-y-2">
+                    <li>• Medical & Aesthetic Clinics – General clinics, plastic surgery, dentistry.   </li>
+                    <li>• Health & Wellness – Nutritionists, dietitians, medical & wellness tourism.</li>
+                    <br><br>
+                    <li>• Beauty & Cosmetics – Cosmetic brands, makeup artists, brow & lash services, nail care.</li>
+                    <li>• Personal Care & Wellness – Cosmetology, massage, salons, spas, barbershops.</li>
+                    <br><br>
+                    <li>• Fitness & Events – Gyms, wellness studios, wedding makeup & beauty services.</li>
+                    <li>• Education & Training – Schools and courses for makeup, cosmetology, and nail services.</li>
+                    <br><br>
+                    <li>• Beauty Tech & Software – CRM, online booking, payment solutions for salons.</li>
+                    <li>• Salon & Clinic Equipment – Furniture and professional tools for beauty salons & medical clinics.</li>
+                  </ul>
+                </div>
+                <div class="border border-gray-300 rounded-lg p-4">
+                  <h3 class="md:text-2xl md:mb-5 mb-2 font-bold">What's Included:</h3>
+                  <ul class="text-sm md:text-base xl:text-lg space-y-2 mb-4">
+                    <li><b>A)</b> One of the 80 Showcase Spots:
+                      <ul class="pl-4 space-y-2 mt-2">
+                        <li>- 8, 9 November (runway days) 20 Spots in the corridors</li>
+                        <li>- 10, 11 November (market days)  20 Spots in the corridors + 60 Spots in the main hall </li>
+                      </ul>
+                    </li>
+                    <br><br>
+                    <li class="font-bold">B) 50 lead chats per day from EFW visitors (Our Matchmaking technology)</li>
+                    <li><b>C) 50"</b>  Display for presentations with a table and 2 bar chairs </li>
+                    <br><br>
+                    <li><b>D)</b> VIP invitations to all EFW runway shows on 8–11 November 2025</li>
+                  </ul>
+                  <br><br>
+                  <div class="flex items-start text-sm md:text-base xl:text-lg">
+                    <svg class="w-6 h-6 text-amber-400 mr-3 mt-1 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <div>
+                      <p class="font-medium mb-2"><b>Laptops are not provided.</b> Each exhibitor must bring their own laptop and connect it to the display via HDMI to showcase their company's video or presentation.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex flex-col md:gap-4 gap-2">
+                  <h3 class="md:text-2xl font-bold">Total</h3>
+                  <ul class="text-sm md:text-base xl:text-lg space-y-2">
+                    <li>• 60 Spots</li>
+                  </ul>
+                  <br><br>
+                  <h3 class="md:text-2xl font-bold">Prices</h3>
+                  <ul class="text-sm md:text-base xl:text-lg space-y-2">
+                    <li> Early Birds / any day</li>
+                    <li>•<span class="line-through opacity-50"> 3,600 AED / 1,000$ </span> </li>
+                    <li>• 3,000 AED / 800$ / per day</li>
+                  </ul>
+                  <WhatsAppButton 
+                    phone-number="971585753302"
+                    text="Contact us about Showcase spot"
+                  />
+                  <a 
+                    href="#join-waitlist"
+                    class="mt-3 inline-flex items-center gap-2 px-6 py-2.5 text-sm rounded-3xl transition-colors border border-black hover:bg-gray-100 w-fit"
+                    @click.prevent="showWaitlistForm = true"
+                  >
+                    <span>2h Free Trial Spot Waitlist</span>
+                    <span style="background-color: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 12px; font-weight: bold;">{{ waitlistCount }}</span>
+                    <span>></span>
+                  </a>
+                </div>
+            </div>
+          </div>
+        </section>
+          </div>
+        </div>
       </main>
     </div>
 
@@ -703,8 +891,7 @@ function resumeMoleculeCarousel () {
 
 type SidebarType = 'forum1' | 'arena1' | 'arena2' | 'arena3'
 
-const activeSidebarType = ref<SidebarType>('forum1')
-const currentSection = ref<'arena1' | 'forum1' | 'arena2' | 'arena3'>('arena1')
+const activeSidebarType = ref<SidebarType>('arena1')
 const exhibitionSection1Ref = ref<HTMLElement | null>(null)
 const exhibitionSection2Ref = ref<HTMLElement | null>(null)
 const exhibitionSection3Ref = ref<HTMLElement | null>(null)
@@ -831,26 +1018,21 @@ function updateSidebarByScroll () {
 
   // Логика: sidebar показывает противоположное тому, что в центре экрана
   // Последовательность: arena1, forum1, arena2, arena3
-  // Если центр экрана в области arena1 - показываем forum1 в sidebar
+  // Если центр экрана в области arena1 - показываем arena1 в sidebar
   // Если центр экрана в области forum1 - показываем arena1 в sidebar
   // Если центр экрана в области arena2 - показываем forum1 в sidebar
   // Если центр экрана в области arena3 - показываем forum1 в sidebar
   if (centerY >= arena1Top && centerY <= arena1Bottom) {
-    activeSidebarType.value = 'forum1'
-    currentSection.value = 'arena1'
+    activeSidebarType.value = 'arena1'
   } else if (centerY >= forum1Top && centerY <= forum1Bottom) {
     activeSidebarType.value = 'arena1'
-    currentSection.value = 'forum1'
   } else if (centerY >= arena2Top && centerY <= arena2Bottom) {
     activeSidebarType.value = 'forum1'
-    currentSection.value = 'arena2'
   } else if (centerY >= arena3Top && centerY <= arena3Bottom) {
     activeSidebarType.value = 'forum1'
-    currentSection.value = 'arena3'
   } else {
-    // По умолчанию (когда видна arena1) показываем forum1 в sidebar
-    activeSidebarType.value = 'forum1'
-    currentSection.value = 'arena1'
+    // По умолчанию показываем arena1 в sidebar
+    activeSidebarType.value = 'arena1'
   }
 }
 
@@ -977,6 +1159,14 @@ onUnmounted(() => {
   min-width: 0;
 }
 
+/* Мобильная версия: main на всю ширину */
+@media (max-width: 767px) {
+  .content {
+    width: 100vw;
+    max-width: 100vw;
+  }
+}
+
 .speaker-item img,
 .stand-item img {
   transition: transform 0.2s;
@@ -1025,5 +1215,27 @@ onUnmounted(() => {
 
 .view-all-button-wrapper :deep(button:active) {
   background-color: rgba(0, 0, 0, 0.75) !important;
+}
+
+/* Мобильный сайдбар */
+.sidebar-mobile {
+  width: 80px;
+  flex-shrink: 0;
+  align-self: flex-start;
+  height: 100vh;
+  max-height: 100vh;
+  overflow-y: auto;
+  overflow-x: visible;
+  position: sticky;
+  top: 0;
+  background-color: white;
+}
+
+.mobile-section-wrapper {
+  width: 100%;
+}
+
+.mobile-section-content {
+  min-width: 0;
 }
 </style>
