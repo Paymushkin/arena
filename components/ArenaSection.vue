@@ -8,6 +8,7 @@
       <aside
         ref="sidebarRef"
         class="sidebar z-10"
+        :class="currentSection === 'arena1' ? 'hidden md:block' : ''"
       >
         <div class="md:p-3 py-2 lg:p-6">
           <!-- Forum 1 Sidebar Content -->
@@ -457,7 +458,7 @@
           </div>
         </section>
 
-        <!-- Arena 3 Section -->
+  <!-- Arena 3 Section -->      
         <section
           ref="exhibitionSection3Ref"
           id="arena3"
@@ -703,6 +704,7 @@ function resumeMoleculeCarousel () {
 type SidebarType = 'forum1' | 'arena1' | 'arena2' | 'arena3'
 
 const activeSidebarType = ref<SidebarType>('forum1')
+const currentSection = ref<'arena1' | 'forum1' | 'arena2' | 'arena3'>('arena1')
 const exhibitionSection1Ref = ref<HTMLElement | null>(null)
 const exhibitionSection2Ref = ref<HTMLElement | null>(null)
 const exhibitionSection3Ref = ref<HTMLElement | null>(null)
@@ -835,15 +837,20 @@ function updateSidebarByScroll () {
   // Если центр экрана в области arena3 - показываем forum1 в sidebar
   if (centerY >= arena1Top && centerY <= arena1Bottom) {
     activeSidebarType.value = 'forum1'
+    currentSection.value = 'arena1'
   } else if (centerY >= forum1Top && centerY <= forum1Bottom) {
     activeSidebarType.value = 'arena1'
+    currentSection.value = 'forum1'
   } else if (centerY >= arena2Top && centerY <= arena2Bottom) {
     activeSidebarType.value = 'forum1'
+    currentSection.value = 'arena2'
   } else if (centerY >= arena3Top && centerY <= arena3Bottom) {
     activeSidebarType.value = 'forum1'
+    currentSection.value = 'arena3'
   } else {
     // По умолчанию (когда видна arena1) показываем forum1 в sidebar
     activeSidebarType.value = 'forum1'
+    currentSection.value = 'arena1'
   }
 }
 
