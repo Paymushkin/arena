@@ -5,7 +5,7 @@ export const hashtag = ['#DUBAIARENA', 'https://www.instagram.com']
 
 export const address = 'Dubai, Media City'
 export const phone = ['+971569534134', '+971 56 953 4134']
-export const email = 'info@thearena.show'
+export const email = 'ask@thearena.show'
 export const instagram = 'https://www.instagram.com'
 export const youtube = 'https://www.youtube.com'
 

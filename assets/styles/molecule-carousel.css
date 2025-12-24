@@ -1,0 +1,116 @@
+/* Molecule Carousel Container */
+.molecule-carousel-container {
+  position: relative;
+  min-height: 200px;
+  perspective: 1000px;
+}
+
+/* Base molecule layer styles */
+.molecule-layer {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 600px;
+  pointer-events: none;
+}
+
+/* Первая молекула (активная) - без смещения по Y, полная непрозрачность */
+.molecule-layer-1 {
+  z-index: 3;
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* Вторая молекула - смещение вниз, небольшая прозрачность */
+.molecule-layer-2 {
+  z-index: 2;
+  opacity: 0.6;
+  transform: translateX(-50%) translateY(20px) scale(0.95);
+}
+
+/* Третья молекула - большее смещение вниз, большая прозрачность */
+.molecule-layer-3 {
+  z-index: 1;
+  opacity: 0.3;
+  transform: translateX(-50%) translateY(40px) scale(0.9);
+}
+
+/* Анимация перехода - активная молекула уходит вверх с fade */
+.molecule-layer-1.molecule-animating {
+  animation: moleculeExitUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes moleculeExitUp {
+  from {
+    transform: translateX(-50%) translateY(0) scale(1);
+    opacity: 1;
+    z-index: 3;
+    pointer-events: auto;
+  }
+  to {
+    transform: translateX(-50%) translateY(-100px) scale(1);
+    opacity: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+}
+
+/* Анимация перехода - вторая молекула поднимается на место активной */
+.molecule-layer-2.molecule-animating {
+  animation: moleculeMoveToActive 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes moleculeMoveToActive {
+  from {
+    z-index: 2;
+    opacity: 0.6;
+    transform: translateX(-50%) translateY(20px) scale(0.95);
+    pointer-events: none;
+  }
+  to {
+    z-index: 3;
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+    pointer-events: auto;
+  }
+}
+
+/* Анимация перехода - третья молекула поднимается на место второй */
+.molecule-layer-3.molecule-animating {
+  animation: moleculeMoveToSecond 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes moleculeMoveToSecond {
+  from {
+    z-index: 1;
+    opacity: 0.3;
+    transform: translateX(-50%) translateY(40px) scale(0.9);
+  }
+  to {
+    z-index: 2;
+    opacity: 0.6;
+    transform: translateX(-50%) translateY(20px) scale(0.95);
+  }
+}
+
+/* Анимация входа - бывшая активная молекула появляется снизу и поднимается на место третьей */
+.molecule-layer-3.molecule-entering {
+  animation: moleculeEnterFromBottom 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes moleculeEnterFromBottom {
+  from {
+    z-index: 1;
+    opacity: 0;
+    transform: translateX(-50%) translateY(100px) scale(0.9);
+  }
+  to {
+    z-index: 1;
+    opacity: 0.3;
+    transform: translateX(-50%) translateY(40px) scale(0.9);
+  }
+}
+

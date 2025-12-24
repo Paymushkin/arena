@@ -22,7 +22,7 @@
 
     <!-- Arena Section -->
     <ClientOnly>
-      <ArenaSection id="arena" key="arena-section" class="mb-[56px] md:mb-[76px]" />
+      <ArenaSection id="arena" key="arena-section" />
     </ClientOnly>
 
     <!-- FAQ Section -->

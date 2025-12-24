@@ -70,7 +70,7 @@ const schemaScripts = computed(() => {
         contactPoint: [{
           '@type': 'ContactPoint',
           contactType: 'customer support',
-          email: 'info@thearena.show' // TODO: заменить на ваш email
+          email: 'ask@thearena.show'
         }]
       })
     },
